@@ -4,22 +4,11 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Domain;
 
-use DateInterval;
-use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
 use MiniPay\Core\User\Domain\Event\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
-use function array_merge;
+
 use function array_splice;
-use function array_udiff;
-use function assert;
-use function iterator_to_array;
-use function sprintf;
 
 /**
  * @ORM\Entity()
@@ -77,7 +66,7 @@ class User
         string $cpfOrCnpj,
         string $email,
         float $amount
-    ) : self {
+    ): self {
         return new self(
             $id,
             $fullName,
@@ -90,22 +79,22 @@ class User
     /**
      * @psalm-return Id<User> $id
      */
-    public function id() : Id
+    public function id(): Id
     {
         return $this->id;
     }
 
-    public function fullName() : string
+    public function fullName(): string
     {
         return $this->fullName;
     }
 
-    public function cpfOrCnpj() : string
+    public function cpfOrCnpj(): string
     {
         return $this->cpfOrCnpj;
     }
 
-    public function email() : string
+    public function email(): string
     {
         return $this->email;
     }
@@ -113,9 +102,8 @@ class User
     /**
      * @return DomainEvent[]
      */
-    public function domainEvents() : array
+    public function domainEvents(): array
     {
         return array_splice($this->domainEvents, 0);
     }
-
 }

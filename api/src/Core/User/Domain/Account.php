@@ -14,18 +14,18 @@ final class Account
     /** @ORM\Column(type="decimal", precision=8, scale=2, nullable=true) */
     private float $amount;
 
-    public function __construct(float $amount) {
+    public function __construct(float $amount)
+    {
         $this->amount = $amount;
     }
 
-    public function balance() : float
+    public function balance(): float
     {
         return $this->amount;
     }
 
-    public function withdraw(string $amountToWithdraw)
+    public function withdraw(float $amountToWithdraw): void
     {
         $this->amount -= $amountToWithdraw;
     }
-
 }

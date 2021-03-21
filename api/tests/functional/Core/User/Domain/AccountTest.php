@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniPay\Tests\Core\User\Domain;
 
 use MiniPay\Core\User\Domain\Account;
-use MiniPay\Core\User\Domain\User;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
@@ -11,25 +12,25 @@ class AccountTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreateAnAccountWithBalance() : void
+    public function shouldCreateAnAccountWithBalance(): void
     {
-        $amount = '100.00';
+        $initialAmount = 100.00;
 
-        $account = new Account($amount);
+        $account = new Account($initialAmount);
 
-        $this->assertEquals($amount, $account->balance());
+        $this->assertEquals($initialAmount, $account->balance());
     }
 
     /**
      * @test
      */
-    public function shouldWithdrawMoneyWhenHasBalance() : void
+    public function shouldWithdrawMoneyWhenHasBalance(): void
     {
-        $amount = '100.00';
-        $amountToWithdraw = '90.00';
-        $expectedBalance = '10.00';
+        $initialAmount = 100.00;
+        $amountToWithdraw = 90.00;
+        $expectedBalance = 10.00;
 
-        $account = new Account($amount);
+        $account = new Account($initialAmount);
 
         $account->withdraw($amountToWithdraw);
 
