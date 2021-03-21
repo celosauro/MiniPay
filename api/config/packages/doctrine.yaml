@@ -29,4 +29,4 @@ doctrine:
                 type: annotation
                 dir: '%kernel.project_dir%/src/Core/User/Domain'
                 prefix: 'MiniPay\Core\User\Domain'
-                alias: Example
+                alias: Core
