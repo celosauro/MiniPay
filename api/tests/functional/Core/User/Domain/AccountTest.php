@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MiniPay\Tests\Core\User\Domain;
 
 use MiniPay\Core\User\Domain\Account;
+use MiniPay\Core\User\Domain\Exception\Insufficientbalance;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
@@ -35,5 +36,20 @@ class AccountTest extends TestCase
         $account->withdraw($amountToWithdraw);
 
         $this->assertEquals($expectedBalance, $account->balance());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldThrowInsuficientBalanceErrorWhenWithdrawWithoutEnoughBalance(): void
+    {
+        $this->expectException(InsufficientBalance::class);
+
+        $initialAmount = 10.00;
+        $amountToWithdraw = 50.00;
+
+        $account = new Account($initialAmount);
+
+        $account->withdraw($amountToWithdraw);
     }
 }
