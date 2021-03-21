@@ -22,31 +22,30 @@ use function array_splice;
  */
 class User
 {
+    protected const USER_TYPE = 'default';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="app_id", name="id")
      *
      * @psalm-var Id<User> $id
      */
-    private Id $id;
+    protected Id $id;
 
     /** @ORM\Column(type="string", length=14, unique=true) */
-    private string $cpfOrCnpj;
+    protected string $cpfOrCnpj;
 
     /** @ORM\Column(type="string") */
-    private string $fullName;
+    protected string $fullName;
 
     /** @ORM\Column(type="string", unique=true) */
-    private string $email;
+    protected string $email;
 
     /** @ORM\Embedded(class="Account") */
-    private Account $account;
-
-    /** @ORM\Column(type="string") */
-    private string $type;
+    protected Account $account;
 
     /** @var DomainEvent[] */
-    private array $domainEvents;
+    protected array $domainEvents;
 
     /**
      * @psalm-param Id<User> $id
