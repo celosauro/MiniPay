@@ -6,9 +6,8 @@ healthcheck_controllers:
   resource: '../../src/Healthcheck/Infrastructure/Controller'
   type: annotation
 
-# Application controllers directory goes below.
-example_controllers:
-  resource: '../../src/Example/Infrastructure/Controller'
+core_user_controllers:
+  resource: '../../src/Core/User/Infrastructure/Controller'
   type: annotation
 
 #your_package_controllers:

@@ -24,9 +24,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Framework'
                 prefix: 'MiniPay\Framework'
                 alias: Framework
-            MiniPay\Example\Domain:
+            MiniPay\Core\User\Domain:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Example/Domain'
-                prefix: 'MiniPay\Example\Domain'
+                dir: '%kernel.project_dir%/src/Core/User/Domain'
+                prefix: 'MiniPay\Core\User\Domain'
                 alias: Example
