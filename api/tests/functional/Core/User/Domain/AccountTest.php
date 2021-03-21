@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MiniPay\Tests\Core\User\Domain;
 
 use MiniPay\Core\User\Domain\Account;
-use MiniPay\Core\User\Domain\Exception\Insufficientbalance;
+use MiniPay\Core\User\Domain\Exception\InsufficientBalance;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase

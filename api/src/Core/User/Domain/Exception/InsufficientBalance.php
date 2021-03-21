@@ -11,7 +11,7 @@ use RuntimeException;
 
 use function sprintf;
 
-final class Insufficientbalance extends RuntimeException implements Forbidden, Titled, Detailed
+final class InsufficientBalance extends RuntimeException implements Forbidden, Titled, Detailed
 {
     private float $currentBalance;
 
@@ -33,7 +33,7 @@ final class Insufficientbalance extends RuntimeException implements Forbidden, T
     /**
      * {@inheritDoc}
      *
-     * @return array<string, int>
+     * @return array<string, float>
      */
     public function getExtraDetails(): array
     {
