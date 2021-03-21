@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\NotEncodableValueErrorHandler;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Throwable;
 
-use function assert;
 use function json_encode;
 
 class NotEncodableValueErrorHandlerTest extends TestCase
@@ -23,10 +21,7 @@ class NotEncodableValueErrorHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $this->handler = new NotEncodableValueErrorHandler($newRelicLogger);
+        $this->handler = new NotEncodableValueErrorHandler();
     }
 
     /** @dataProvider providerSupportedExceptions */

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniPay\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use InvalidArgumentException;
 use Lcobucci\ErrorHandling\Problem\AuthorizationRequired;
 use Lcobucci\ErrorHandling\Problem\Conflict;
@@ -26,13 +25,6 @@ use function sprintf;
 
 class LcobucciErrorHandler implements ErrorHandler
 {
-    private NewRelicInteractorInterface $newRelicLogger;
-
-    public function __construct(NewRelicInteractorInterface $newRelicLogger)
-    {
-        $this->newRelicLogger = $newRelicLogger;
-    }
-
     public function canHandleWith(Throwable $exception): bool
     {
         switch (true) {
@@ -66,8 +58,6 @@ class LcobucciErrorHandler implements ErrorHandler
         if ($error instanceof Detailed) {
             $data += $error->getExtraDetails();
         }
-
-        $this->newRelicLogger->noticeThrowable($error);
 
         return new JsonResponse(
             $data,

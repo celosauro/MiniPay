@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniPay\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +15,6 @@ use function sprintf;
 
 class NotFoundHttpErrorHandler implements ErrorHandler
 {
-    private NewRelicInteractorInterface $newRelicLogger;
-
-    public function __construct(NewRelicInteractorInterface $newRelicLogger)
-    {
-        $this->newRelicLogger = $newRelicLogger;
-    }
-
     public function canHandleWith(Throwable $exception): bool
     {
         return $exception instanceof NotFoundHttpException;
@@ -33,8 +25,6 @@ class NotFoundHttpErrorHandler implements ErrorHandler
         if (! $this->canHandleWith($exception)) {
             throw new InvalidArgumentException(sprintf('Error %s cannot be handled.', get_class($exception)));
         }
-
-        $this->newRelicLogger->noticeThrowable($exception);
 
         return new JsonResponse(['detail' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
     }

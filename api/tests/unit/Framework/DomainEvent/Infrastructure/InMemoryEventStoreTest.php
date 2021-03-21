@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace MiniPay\Tests\Framework\DomainEvent\Infrastructure;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\DomainEvent\Infrastructure\InMemoryEventStore;
 use MiniPay\Tests\Framework\DomainEvent\Domain\TestEvent;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;

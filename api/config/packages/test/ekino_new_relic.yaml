@@ -1,4 +1,0 @@
-ekino_new_relic:
-    enabled: true
-    exceptions: true
-    deprecations: true

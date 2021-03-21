@@ -8,6 +8,7 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^7.2",
         "lcobucci/error-handling-middleware": "^1.1",
         "nesbot/carbon": "^2.46",

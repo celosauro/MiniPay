@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace MiniPay\Tests\Framework\DomainEvent\Domain;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher;
 use MiniPay\Framework\DomainEvent\Domain\PersistDomainEventSubscriber;
 use MiniPay\Framework\DomainEvent\Infrastructure\InMemoryEventStore;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;

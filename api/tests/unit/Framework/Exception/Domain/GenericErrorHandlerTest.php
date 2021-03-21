@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Error;
 use Exception;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\GenericErrorHandler;
+use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function json_encode;
 
 class GenericErrorHandlerTest extends TestCase
@@ -20,10 +18,7 @@ class GenericErrorHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $this->handler = new GenericErrorHandler($newRelicLogger);
+        $this->handler = new GenericErrorHandler();
     }
 
     public function testCanHandleWithShouldReturnTrueForBaseExceptionClass(): void

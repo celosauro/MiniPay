@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MiniPay\Tests\Framework\DomainEvent\Domain;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\DomainEvent\Domain\StoredEvent;
+use PHPUnit\Framework\TestCase;
 
 class StoredEventTest extends TestCase
 {

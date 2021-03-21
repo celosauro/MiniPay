@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\DebugHandler;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\GenericErrorHandler;
 use MiniPay\Framework\Exception\Domain\HandlerFailedErrorHandler;
 use MiniPay\Framework\Exception\Domain\SymfonyMessengerErroUnpacker;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
 
-use function assert;
 use function json_decode;
 
 class DebugHandlerTest extends TestCase
@@ -72,14 +70,11 @@ class DebugHandlerTest extends TestCase
             );
         };
 
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
         for ($i = 0; $i <= 4; $i++) {
             $lineOfPreviousException = 0;
             $lineOfException = __LINE__ + 3;
             $provider['when there is complete error information with' . $i . ' previous exception'] = [
-                new GenericErrorHandler($newRelicLogger),
+                new GenericErrorHandler(),
                 new Exception('Internal Server Error', 500, $addPreviousException($i, $lineOfPreviousException)),
                 [
                     'detail' => 'Internal Server Error',
@@ -127,10 +122,7 @@ class DebugHandlerTest extends TestCase
     /** @return array<mixed> */
     public function providerNotSupportedExceptions(): array
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $errorHandler = new HandlerFailedErrorHandler($newRelicLogger);
+        $errorHandler = new HandlerFailedErrorHandler();
 
         return [
             'when is an Exception' => [$errorHandler, new Exception()],

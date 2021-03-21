@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\HandlerFailedErrorHandler;
 use MiniPay\Framework\Exception\Domain\LcobucciErrorHandler;
 use MiniPay\Framework\Exception\Domain\SymfonyMessengerErroUnpacker;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Throwable;
 
-use function assert;
 use function json_encode;
 
 class SymfonyMessengerErroUnpackerTest extends TestCase
@@ -68,22 +66,16 @@ class SymfonyMessengerErroUnpackerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $handler = new LcobucciErrorHandler($newRelicLogger);
+        $handler = new LcobucciErrorHandler();
         $handler->handle($error);
     }
 
     /** @return array<mixed> */
     public function providerSupportedExceptions(): array
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
         return [
             'when there is complete error information' => [
-                new LcobucciErrorHandler($newRelicLogger),
+                new LcobucciErrorHandler(),
                 InsufficientCredit::forPurchase(30, 50),
                 [
                     'detail' => 'Your current balance is 30, but that costs 50.',
@@ -94,7 +86,7 @@ class SymfonyMessengerErroUnpackerTest extends TestCase
                 403,
             ],
             'when is custom exception into a HandlerFailedException' => [
-                new LcobucciErrorHandler($newRelicLogger),
+                new LcobucciErrorHandler(),
                 new HandlerFailedException(
                     new Envelope(new stdClass()),
                     [InsufficientCredit::forPurchase(30, 50)]
@@ -113,10 +105,7 @@ class SymfonyMessengerErroUnpackerTest extends TestCase
     /** @return array<mixed> */
     public function providerNotSupportedExceptions(): array
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $errorHandler = new HandlerFailedErrorHandler($newRelicLogger);
+        $errorHandler = new HandlerFailedErrorHandler();
 
         return [
             'when is an Exception' => [$errorHandler, new Exception()],

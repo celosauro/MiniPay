@@ -6,10 +6,10 @@ namespace MiniPay\Tests\Framework\Id\Infrastructure\Doctrine\DBALTypes;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Id\Domain\Id as ValueObject;
 use MiniPay\Framework\Id\Infrastructure\Doctrine\DBALTypes\IdType;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 use function assert;
 

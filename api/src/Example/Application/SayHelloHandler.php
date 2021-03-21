@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace MiniPay\Example\Application;
 
 use Doctrine\Persistence\ObjectManager;
+use MiniPay\Example\Domain\Message;
 use MiniPay\Framework\Id\Domain\Id;
 use Psr\Log\LoggerInterface;
-use MiniPay\Example\Domain\Message;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 final class SayHelloHandler implements MessageHandlerInterface

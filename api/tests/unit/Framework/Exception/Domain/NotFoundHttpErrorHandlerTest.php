@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\NotFoundHttpErrorHandler;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-use function assert;
 use function json_encode;
 
 class NotFoundHttpErrorHandlerTest extends TestCase
@@ -23,10 +21,7 @@ class NotFoundHttpErrorHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $this->handler = new NotFoundHttpErrorHandler($newRelicLogger);
+        $this->handler = new NotFoundHttpErrorHandler();
     }
 
     /** @dataProvider providerSupportedExceptions */

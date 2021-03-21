@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
 use MiniPay\Framework\Exception\Domain\ValidationFailedErrorHandler;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
@@ -17,7 +16,6 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Throwable;
 
-use function assert;
 use function json_encode;
 
 class ValidationFailedErrorHandlerTest extends TestCase
@@ -26,10 +24,7 @@ class ValidationFailedErrorHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        $this->handler = new ValidationFailedErrorHandler($newRelicLogger);
+        $this->handler = new ValidationFailedErrorHandler();
     }
 
     /** @dataProvider providerSupportedExceptions */

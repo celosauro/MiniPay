@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniPay\Framework\Exception\Infrastructure;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use InvalidArgumentException;
 use MiniPay\Framework\Exception\Domain\DebugHandler;
 use MiniPay\Framework\Exception\Domain\ErrorHandler;
@@ -50,11 +49,9 @@ class SymfonyExceptionListener
         self::MODE_PRODUCTION,
     ];
 
-    private NewRelicInteractorInterface $newRelicLogger;
-
     private string $mode;
 
-    public function __construct(string $mode, NewRelicInteractorInterface $newRelicLogger)
+    public function __construct(string $mode)
     {
         if (in_array($mode, self::MODES, true) === false) {
             throw new InvalidArgumentException(sprintf(
@@ -65,7 +62,6 @@ class SymfonyExceptionListener
         }
 
         $this->mode = $mode;
-        $this->newRelicLogger = $newRelicLogger;
     }
 
     public function onKernelException(ExceptionEvent $event): void
@@ -90,14 +86,14 @@ class SymfonyExceptionListener
     private function configuredHandlers(): array
     {
         $handlers = [
-            new SymfonyMessengerErroUnpacker(new LcobucciErrorHandler($this->newRelicLogger)),
-            new SymfonyMessengerErroUnpacker(new ValidationFailedErrorHandler($this->newRelicLogger)),
-            new SymfonyMessengerErroUnpacker(new NotEncodableValueErrorHandler($this->newRelicLogger)),
-            new SymfonyMessengerErroUnpacker(new NotFoundHttpErrorHandler($this->newRelicLogger)),
+            new SymfonyMessengerErroUnpacker(new LcobucciErrorHandler()),
+            new SymfonyMessengerErroUnpacker(new ValidationFailedErrorHandler()),
+            new SymfonyMessengerErroUnpacker(new NotEncodableValueErrorHandler()),
+            new SymfonyMessengerErroUnpacker(new NotFoundHttpErrorHandler()),
         ];
 
         if ($this->shouldHandleExceptionsNotSupportedByConfiguredHandlers()) {
-            $handlers[] = new GenericErrorHandler($this->newRelicLogger);
+            $handlers[] = new GenericErrorHandler();
         }
 
         if ($this->shouldAttachDebugInformationToResponse() === false) {

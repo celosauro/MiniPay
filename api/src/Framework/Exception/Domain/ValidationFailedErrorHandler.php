@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniPay\Framework\Exception\Domain;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,13 +16,6 @@ use function str_replace;
 
 class ValidationFailedErrorHandler implements ErrorHandler
 {
-    private NewRelicInteractorInterface $newRelicLogger;
-
-    public function __construct(NewRelicInteractorInterface $newRelicLogger)
-    {
-        $this->newRelicLogger = $newRelicLogger;
-    }
-
     public function canHandleWith(Throwable $exception): bool
     {
         return $exception instanceof ValidationFailedException;
@@ -50,8 +42,6 @@ class ValidationFailedErrorHandler implements ErrorHandler
 
             $responseData['violations'][] = $violationData;
         }
-
-        $this->newRelicLogger->noticeThrowable($exception);
 
         return new JsonResponse($responseData, StatusCodeInterface::STATUS_BAD_REQUEST);
     }

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Exception\Infrastructure;
 
-use Ekino\NewRelicBundle\NewRelic\NewRelicInteractor;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener;
 use MiniPay\Tests\Framework\Exception\Domain\UserNotFound;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -27,8 +26,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeIsASupportedMode(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
 
         $this->assertInstanceOf(SymfonyExceptionListener::class, $listener);
@@ -38,8 +36,7 @@ class SymfonyExceptionListenerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $listener = new SymfonyExceptionListener(
-            'nonexistent mode',
-            $this->aNewRelicLogger()
+            'nonexistent mode'
         );
     }
 
@@ -49,8 +46,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeShouldCreateResponseForSupportedException(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
         $event = $this->aExceptionEventFor(new UserNotFound('User was not found'));
 
@@ -65,8 +61,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeShouldCreateResponseForUnsupportedException(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
         $event = $this->aExceptionEventFor(new Exception('There is no handler for this exception class'));
 
@@ -81,8 +76,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeShouldNotCreateResponseForUnsupportedException(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
         $event = $this->aExceptionEventFor(new Exception('There is no handler for this exception class'));
 
@@ -97,8 +91,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeShouldAppendDebugInformationInRespose(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
         $event = $this->aExceptionEventFor(new UserNotFound('User was not found'));
 
@@ -117,8 +110,7 @@ class SymfonyExceptionListenerTest extends TestCase
     public function testGivenModeShouldNotAppendDebugInformationInRespose(string $mode): void
     {
         $listener = new SymfonyExceptionListener(
-            $mode,
-            $this->aNewRelicLogger()
+            $mode
         );
         $event = $this->aExceptionEventFor(new UserNotFound('User was not found'));
 
@@ -218,14 +210,6 @@ class SymfonyExceptionListenerTest extends TestCase
                 SymfonyExceptionListener::MODE_PRODUCTION,
             ],
         ];
-    }
-
-    private function aNewRelicLogger(): NewRelicInteractor
-    {
-        $newRelicLogger = $this->getMockBuilder(NewRelicInteractor::class)->getMock();
-        assert($newRelicLogger instanceof NewRelicInteractor);
-
-        return $newRelicLogger;
     }
 
     private function aExceptionEventFor(Throwable $throwable): ExceptionEvent

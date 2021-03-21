@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Framework\Id\Domain;
 
-use PHPUnit\Framework\TestCase;
 use MiniPay\Framework\Id\Domain\Id;
 use MiniPay\Framework\Id\Domain\InvalidId;
+use PHPUnit\Framework\TestCase;
 
 class IdTest extends TestCase
 {
