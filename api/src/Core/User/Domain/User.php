@@ -33,7 +33,7 @@ class User
     private string $email;
 
     /** @ORM\Embedded(class="Account") */
-    private ?Account $account;
+    private Account $account;
 
     /** @var DomainEvent[] */
     private array $domainEvents;
@@ -46,7 +46,7 @@ class User
         string $fullName,
         string $cpfOrCnpj,
         string $email,
-        float $amount
+        Account $account
     ) {
         $this->id = $id;
         $this->fullName = $fullName;
@@ -54,7 +54,7 @@ class User
         $this->email = $email;
         $this->domainEvents = [];
 
-        $this->account = new Account($amount);
+        $this->account = $account;
     }
 
     /**
@@ -65,14 +65,14 @@ class User
         string $fullName,
         string $cpfOrCnpj,
         string $email,
-        float $amount
+        Account $account
     ): self {
         return new self(
             $id,
             $fullName,
             $cpfOrCnpj,
             $email,
-            $amount
+            $account
         );
     }
 
@@ -105,5 +105,10 @@ class User
     public function domainEvents(): array
     {
         return array_splice($this->domainEvents, 0);
+    }
+
+    public function balance() : float
+    {
+        return $this->account->balance();
     }
 }
