@@ -1,0 +1,96 @@
+openapi: 3.0.1
+info:
+  title: MiniPay
+  description: |
+    <p>MiniPay.</p>
+    <ul>
+      <li>Every communication must use <strong>UTF-8</strong> encoding.</li>
+      <li>Data and time must follow the <a href="https://en.wikipedia.org/wiki/ISO_8601/">ISO 8601</a> specification.</li>
+      <ul>
+        <li>Date: <strong>YYYY-MM-DD</strong> <i>(Ex: 2020-03-12)</i></li>
+        <li>Datetime: <strong>YYYY-mm-ddThh:mm:ssZ</strong> <i>(Ex: 2020-03-12T10:33:49Z)</i></li>
+        <ul>
+          <li>Time is always in <strong>UTC</strong>.</li>
+        </ul>
+      </ul>
+    </ul>
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/'
+    description: develop
+tags:
+  - name: Healthcheck
+    description: The health of service.
+paths:
+  /healthcheck:
+    get:
+      tags:
+        - Healthcheck
+      summary: Returns the health of the service
+      description:  |
+        Returns the health of the service
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: "string"
+                    description: OK
+                    example: "ok"
+                  datetime:
+                    type: "string"
+                    format: datetime
+                    description: Current datetime
+                    example: "2020-07-21T12:19:12Z"
+                  timestamp:
+                    type: "string"
+                    format: datetime
+                    description: Current timestamp
+                    example: "1595333952"
+
+components:
+  schemas:
+    Error:
+      properties:
+        detail:
+          type: string
+          example: "Error to do some operation with this specific ID"
+        title:
+          type: string
+          example: "Error to process operation"
+        type:
+          type: string
+          example: "http://errorurl/id"
+        extra_details:
+          type: object
+    ValidationError:
+      properties:
+        detail:
+          type: string
+          example: "Validation failed"
+        violations:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+  responses:
+    400BadRequest:
+      description: Bad request | Bad encoded input
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404NotFound:
+      description: The specified resource was not found
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/Error'

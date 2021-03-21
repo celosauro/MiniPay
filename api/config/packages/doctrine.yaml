@@ -1,0 +1,32 @@
+doctrine:
+    dbal:
+        url: 'mysql://%env(DB_USER)%:%env(DB_PASSWORD)%@%env(DB_SERVER)%:%env(DB_PORT)%/%env(DB_NAME)%'
+    #     # IMPORTANT: You MUST configure your server version,
+    #     # either here or in the DATABASE_URL env var (see .env file)
+        server_version: '8'
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_0900_ai_ci
+        types:
+            mensageiro_id: MiniPay\Framework\Id\Infrastructure\Doctrine\DBALTypes\IdType
+            datetime_immutable: \Carbon\Doctrine\DateTimeImmutableType
+            datetime: \Carbon\Doctrine\DateTimeType
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            MiniPay\Framework:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Framework'
+                prefix: 'MiniPay\Framework'
+                alias: Framework
+            MiniPay\Example\Domain:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Example/Domain'
+                prefix: 'MiniPay\Example\Domain'
+                alias: Example

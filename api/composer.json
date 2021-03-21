@@ -1,0 +1,129 @@
+{
+    "name": "marceloaas/minipay",
+    "description": "Pagamentos",
+    "type": "project",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.4",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.2",
+        "lcobucci/error-handling-middleware": "^1.1",
+        "nesbot/carbon": "^2.46",
+        "ramsey/uuid": "^4.1.1",
+        "symfony/asset": "5.2.*",
+        "symfony/console": "5.2.*",
+        "symfony/dotenv": "5.2.*",
+        "symfony/expression-language": "5.2.*",
+        "symfony/flex": "^1.3.1",
+        "symfony/framework-bundle": "5.2.*",
+        "symfony/messenger": "5.2.*",
+        "symfony/mime": "5.2.*",
+        "symfony/monolog-bundle": "^3.6",
+        "symfony/orm-pack": "^2.0",
+        "symfony/serializer-pack": "^1.0",
+        "symfony/validator": "5.2.*",
+        "symfony/yaml": "5.2.*"
+    },
+    "require-dev": {
+        "doctrine/coding-standard": "^8.2",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12.25",
+        "phpstan/phpstan-doctrine": "^0.12.14",
+        "phpunit/phpunit": "^9",
+        "psalm/plugin-phpunit": "^0.13.0",
+        "psalm/plugin-symfony": "^2.0.2",
+        "squizlabs/php_codesniffer": "3.5.5",
+        "symfony/browser-kit": "5.2.*",
+        "symfony/maker-bundle": "^1.19",
+        "symfony/profiler-pack": "^1.0",
+        "vimeo/psalm": "^4.2.1"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "process-timeout": 0
+    },
+    "autoload": {
+        "psr-4": {
+            "MiniPay\\": "src/"
+        },
+        "files": [
+            "src/Kernel.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MiniPay\\Tests\\": [
+                "tests/unit",
+                "tests/functional"
+            ]
+        },
+        "files": []
+    },
+    "replace": {
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php71": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "test-ci": [
+            "phpcs",
+            "phpstan analyse --memory-limit=-1",
+            "psalm",
+            "XDEBUG_MODE=coverage phpunit --coverage-text --colors=never --coverage-clover=var/coverage/coverage.clover --log-junit=var/coverage/log-junit.xml"
+        ],
+        "test": [
+            "phpcs",
+            "phpstan analyse --memory-limit=-1",
+            "psalm",
+            "phpunit"
+        ],
+        "lint": [
+            "phpcs"
+        ],
+        "lint-fix": [
+            "phpcbf"
+        ],
+        "coverage": [
+            "phpunit --coverage-html var/coverage/"
+        ],
+        "worker:queue:consumer": [
+            "console messenger:consume async --limit=20 -vvv --no-interaction"
+        ],
+        "worker:queue:producer": [
+            "echo worker:queue:producer"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "5.2.*"
+        },
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        }
+    }
+}

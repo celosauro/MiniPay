@@ -1,0 +1,16 @@
+kernel:
+  resource: ../../src/Kernel.php
+  type: annotation
+
+healthcheck_controllers:
+  resource: '../../src/Healthcheck/Infrastructure/Controller'
+  type: annotation
+
+# Application controllers directory goes below.
+example_controllers:
+  resource: '../../src/Example/Infrastructure/Controller'
+  type: annotation
+
+#your_package_controllers:
+#  resource: '../../src/YourPackage/Infrastructure/Controller'
+#  type: annotation
