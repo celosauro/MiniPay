@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace MiniPay\Core\User\Domain;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\InheritanceType;
 use MiniPay\Core\User\Domain\Event\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
@@ -12,6 +15,10 @@ use function array_splice;
 
 /**
  * @ORM\Entity()
+ *
+ * @InheritanceType("SINGLE_TABLE")
+ * @DiscriminatorColumn(name="type", type="string")
+ * @DiscriminatorMap({"default" = "User", "storekeeper" = "StoreKeeper"})
  */
 class User
 {
@@ -35,6 +42,9 @@ class User
     /** @ORM\Embedded(class="Account") */
     private Account $account;
 
+    /** @ORM\Column(type="string") */
+    private string $type;
+
     /** @var DomainEvent[] */
     private array $domainEvents;
 
@@ -52,9 +62,9 @@ class User
         $this->fullName = $fullName;
         $this->cpfOrCnpj = $cpfOrCnpj;
         $this->email = $email;
-        $this->domainEvents = [];
-
         $this->account = $account;
+
+        $this->domainEvents = [];
     }
 
     /**
@@ -99,6 +109,11 @@ class User
         return $this->email;
     }
 
+    public function balance() : float
+    {
+        return $this->account->balance();
+    }
+
     /**
      * @return DomainEvent[]
      */
@@ -107,8 +122,4 @@ class User
         return array_splice($this->domainEvents, 0);
     }
 
-    public function balance() : float
-    {
-        return $this->account->balance();
-    }
 }
