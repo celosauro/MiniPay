@@ -20,6 +20,7 @@ final class CreateUser
     public string $cpfOrCnpj;
 
     /**
+     * @SerializedName("full_name")
      * @Assert\NotBlank()
      * @Assert\Length(min="5", max="50")
      */
@@ -31,12 +32,15 @@ final class CreateUser
      */
     public string $email;
 
-    /** @Assert\Type("float") */
+    /**
+     * @SerializedName("wallet_amount")
+     * @Assert\Type("float")
+     */
     public float $walletAmount;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Choice("default", "storekeeper")
+     * @Assert\Choice({"default", "storekeeper"})
      */
     public string $type;
 
