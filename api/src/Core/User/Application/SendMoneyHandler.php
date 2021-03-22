@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
-use DateTimeImmutable;
-use MiniPay\Core\User\Domain\DefaultUser;
-use MiniPay\Core\User\Domain\Event\UserCreated;
-use MiniPay\Core\User\Domain\Exception\CannotCreateUser;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
-use MiniPay\Core\User\Domain\Exception\UserAlreadyExists;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
-use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Framework\DomainEvent\Domain\EventStore;
 use MiniPay\Framework\Id\Domain\Id;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 use function assert;
-use function in_array;
 
 class SendMoneyHandler implements MessageHandlerInterface
 {
@@ -50,6 +43,9 @@ class SendMoneyHandler implements MessageHandlerInterface
         $payee = $this->repository->findOneByIdOrNull(Id::fromString($command->payee));
         $this->throwExceptionIfUserNotFound($payee, $command->payee);
 
+        assert($payer instanceof User);
+        assert($payee instanceof User);
+
         $payer->withdraw($command->value);
         $payee->receive($command->value);
 
@@ -66,9 +62,9 @@ class SendMoneyHandler implements MessageHandlerInterface
         }
     }
 
-    private function throwExceptionIfPayerIsStoreKeeperUser(User $payer): void
+    private function throwExceptionIfPayerIsStoreKeeperUser(?User $payer): void
     {
-        if ($payer instanceOf StoreKeeperUser) {
+        if ($payer instanceof StoreKeeperUser) {
             throw CannotSendMoney::fromStoreKeeperUser($payer->id()->toString());
         }
     }

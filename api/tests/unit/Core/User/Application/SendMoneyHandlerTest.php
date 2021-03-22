@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Application;
 
-use DateTimeImmutable;
-use MiniPay\Core\User\Application\CreateUser;
-use MiniPay\Core\User\Application\CreateUserHandler;
 use MiniPay\Core\User\Application\SendMoney;
 use MiniPay\Core\User\Application\SendMoneyHandler;
 use MiniPay\Core\User\Domain\DefaultUser;
-use MiniPay\Core\User\Domain\Event\UserCreated;
-use MiniPay\Core\User\Domain\Exception\CannotCreateUser;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
-use MiniPay\Core\User\Domain\Exception\UserAlreadyExists;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\User;
@@ -28,8 +22,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 use function assert;
-use function get_class;
-use function is_string;
 
 class SendMoneyHandlerTest extends TestCase
 {
@@ -61,7 +53,9 @@ class SendMoneyHandlerTest extends TestCase
         $handler($command);
 
         $foundPayer = $repository->findOneByIdOrNull($payerId);
+        assert($foundPayer instanceof User);
         $foundPayee = $repository->findOneByIdOrNull($payeeId);
+        assert($foundPayee instanceof User);
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
@@ -95,7 +89,9 @@ class SendMoneyHandlerTest extends TestCase
         $handler($command);
 
         $foundPayer = $repository->findOneByIdOrNull($payerId);
+        assert($foundPayer instanceof User);
         $foundPayee = $repository->findOneByIdOrNull($payeeId);
+        assert($foundPayee instanceof User);
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
@@ -214,5 +210,4 @@ class SendMoneyHandlerTest extends TestCase
             new Wallet(100)
         );
     }
-
 }

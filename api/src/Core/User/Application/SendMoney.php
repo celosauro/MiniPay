@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MiniPay\Core\User\Application;
 
 use MiniPay\Framework\Id\Domain\Id;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @psalm-immutable */
