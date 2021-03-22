@@ -1,4 +1,4 @@
-ARG PHP_IMAGE=skeleton_php
+ARG PHP_IMAGE=minipay_php
 ARG PHP_IMAGE_TAG=latest
 
 FROM ${PHP_IMAGE}:${PHP_IMAGE_TAG} as assets

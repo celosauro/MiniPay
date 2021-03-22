@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniPay\Tests\Core\User\Domain;
 
 use MiniPay\Core\User\Domain\Account;
@@ -35,5 +37,4 @@ class UserTest extends TestCase
         $this->assertEquals($email, $user->email());
         $this->assertEquals($balance, $user->balance());
     }
-
 }

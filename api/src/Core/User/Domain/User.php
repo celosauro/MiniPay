@@ -108,7 +108,7 @@ class User
         return $this->email;
     }
 
-    public function balance() : float
+    public function balance(): float
     {
         return $this->account->balance();
     }
@@ -120,5 +120,4 @@ class User
     {
         return array_splice($this->domainEvents, 0);
     }
-
 }
