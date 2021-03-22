@@ -6,7 +6,8 @@
 parameters:
     # The default should be 'production' in order to mitigate the risk of missing or wrong configuration.
     env(EXCEPTION_LISTENER_MODE): 'production'
-    framework.clock: MiniPay\Framework\Clock\Infrastructure\SystemClock
+    event.store: MiniPay\Framework\DomainEvent\Infrastructure\DoctrineEventStore
+    user.repository: MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository
 
 services:
     # default configuration for services in *this* file
@@ -33,12 +34,6 @@ services:
             $mode: '%env(EXCEPTION_LISTENER_MODE)%'
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
-
-    MiniPay\Framework\Clock\Domain\Clock:
-        class: '%framework.clock%'
-
-    Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface:
-        class: Ekino\NewRelicBundle\NewRelic\NewRelicInteractor
     ## Fim - configs do mensageiro framework
 
     # controllers are imported separately to make sure services can be injected
@@ -56,3 +51,21 @@ services:
 
     GuzzleHttp\Client:
         class: 'GuzzleHttp\Client'
+
+    # EventStore
+    MiniPay\Framework\DomainEvent\Domain\EventStore:
+        class: '%event.store%'
+
+    # PersistDomainEventSubscriber
+    domain_event.persist_domain_event_subscriber:
+        class: MiniPay\Framework\DomainEvent\Domain\PersistDomainEventSubscriber
+
+    # DomainEventPublisher
+    MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher:
+        class: 'MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher'
+        arguments:
+            - ['@domain_event.persist_domain_event_subscriber']
+
+    # Repository
+    MiniPay\Core\User\Domain\UserRepository:
+        class: '%user.repository%'
