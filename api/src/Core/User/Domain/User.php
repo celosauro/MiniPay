@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
-use MiniPay\Core\User\Domain\Event\DomainEvent;
+use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
 use function array_splice;
