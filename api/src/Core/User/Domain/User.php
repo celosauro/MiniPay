@@ -41,8 +41,8 @@ class User
     /** @ORM\Column(type="string", unique=true) */
     protected string $email;
 
-    /** @ORM\Embedded(class="Account") */
-    protected Account $account;
+    /** @ORM\Embedded(class="Wallet") */
+    protected Wallet $wallet;
 
     /** @var DomainEvent[] */
     protected array $domainEvents;
@@ -55,13 +55,13 @@ class User
         string $fullName,
         string $cpfOrCnpj,
         string $email,
-        Account $account
+        Wallet $wallet
     ) {
         $this->id = $id;
         $this->fullName = $fullName;
         $this->cpfOrCnpj = $cpfOrCnpj;
         $this->email = $email;
-        $this->account = $account;
+        $this->wallet = $wallet;
 
         $this->domainEvents = [];
     }
@@ -74,14 +74,14 @@ class User
         string $fullName,
         string $cpfOrCnpj,
         string $email,
-        Account $account
+        Wallet $wallet
     ): self {
         return new self(
             $id,
             $fullName,
             $cpfOrCnpj,
             $email,
-            $account
+            $wallet
         );
     }
 
@@ -110,7 +110,7 @@ class User
 
     public function balance(): float
     {
-        return $this->account->balance();
+        return $this->wallet->balance();
     }
 
     /**

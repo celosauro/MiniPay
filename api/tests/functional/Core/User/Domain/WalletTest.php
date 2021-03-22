@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Domain;
 
-use MiniPay\Core\User\Domain\Account;
+use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Core\User\Domain\Exception\InsufficientBalance;
 use PHPUnit\Framework\TestCase;
 
-class AccountTest extends TestCase
+class WalletTest extends TestCase
 {
     /**
      * @test
@@ -17,7 +17,7 @@ class AccountTest extends TestCase
     {
         $initialAmount = 100.00;
 
-        $account = new Account($initialAmount);
+        $account = new Wallet($initialAmount);
 
         $this->assertEquals($initialAmount, $account->balance());
     }
@@ -31,7 +31,7 @@ class AccountTest extends TestCase
         $amountToWithdraw = 90.00;
         $expectedBalance = 10.00;
 
-        $account = new Account($initialAmount);
+        $account = new Wallet($initialAmount);
 
         $account->withdraw($amountToWithdraw);
 
@@ -48,7 +48,7 @@ class AccountTest extends TestCase
         $initialAmount = 10.00;
         $amountToWithdraw = 50.00;
 
-        $account = new Account($initialAmount);
+        $account = new Wallet($initialAmount);
 
         $account->withdraw($amountToWithdraw);
     }

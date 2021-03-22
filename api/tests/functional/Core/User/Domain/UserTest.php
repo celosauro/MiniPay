@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Domain;
 
-use MiniPay\Core\User\Domain\Account;
+use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ class UserTest extends TestCase
         $cpfOrCnpj = '88498957044';
         $email = 'foobar@test.com';
         $balance = 99.99;
-        $account = new Account($balance);
+        $account = new Wallet($balance);
 
         $user = User::create(
             $id,

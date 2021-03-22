@@ -10,7 +10,7 @@ use MiniPay\Core\User\Domain\Exception\InsufficientBalance;
 /**
  * @ORM\Embeddable()
  */
-final class Account
+final class Wallet
 {
     /** @ORM\Column(type="decimal", precision=8, scale=2, nullable=true) */
     private float $amount;
