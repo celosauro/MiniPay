@@ -30,17 +30,42 @@ class InMemoryUserRepository implements UserRepository
     /**
      * @psalm-param Id<User> $id
      */
-    public function findOneById(Id $id) : User
+    public function findOneByIdOrNull(Id $id) : ?User
     {
         $envelope = array_filter($this->items, static function ($item) use ($id) {
             return $item->id()->isEqualTo($id);
         });
 
         if (empty($envelope)) {
-            throw UserNotFound::withId($id->toString());
+            return null;
         }
 
         return reset($envelope);
     }
 
+    public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj): ?User
+    {
+        $envelope = array_filter($this->items, static function ($item) use ($cpfOrCnpj) {
+            return $item->cpfOrCnpj() === $cpfOrCnpj;
+        });
+
+        if (empty($envelope)) {
+            return null;
+        }
+
+        return reset($envelope);
+    }
+
+    public function findOneByEmailOrNull(string $email): ?User
+    {
+        $envelope = array_filter($this->items, static function ($item) use ($email) {
+            return $item->email() === $email;
+        });
+
+        if (empty($envelope)) {
+            return null;
+        }
+
+        return reset($envelope);
+    }
 }

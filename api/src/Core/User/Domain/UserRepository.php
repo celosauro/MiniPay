@@ -11,7 +11,17 @@ interface UserRepository
     /**
      * @psalm-param Id<User> $id
      */
-    public function findOneById(Id $id) : User;
+    public function findOneByIdOrNull(Id $id) : ?User;
+
+    /**
+     * @psalm-param Id<User> $id
+     */
+    public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj) : ?User;
+
+    /**
+     * @psalm-param Id<User> $id
+     */
+    public function findOneByEmailOrNull(string $email) : ?User;
 
     public function save(User $envelope) : void;
 }

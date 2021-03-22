@@ -38,7 +38,7 @@ class DoctrineUserRepository implements UserRepository
     /**
      * @psalm-param Id<User> $id
      */
-    public function findOneById(Id $id) : User
+    public function findOneByIdOrNull(Id $id) : User
     {
         $user = $this->objectManager->getRepository(self::ENTITY)->findOneBy([
             'id' => $id,
@@ -49,5 +49,15 @@ class DoctrineUserRepository implements UserRepository
         }
 
         throw UserNotFound::withId($id->toString());
+    }
+
+    public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj): ?User
+    {
+        // TODO: Implement findOneByCpfOrCnpjOrNull() method.
+    }
+
+    public function findOneByEmailOrNull(string $email): ?User
+    {
+        // TODO: Implement findOneByEmailOrNull() method.
     }
 }
