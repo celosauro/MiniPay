@@ -18,12 +18,10 @@ use function array_splice;
  *
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="type", type="string")
- * @DiscriminatorMap({"default" = "User", "storekeeper" = "StoreKeeper"})
+ * @DiscriminatorMap({"default" = "DefaultUser", "storekeeper" = "StoreKeeperUser"})
  */
-class User
+abstract class User
 {
-    public const USER_TYPE = 'default';
-
     /**
      * @ORM\Id
      * @ORM\Column(type="app_id", name="id")
@@ -50,7 +48,7 @@ class User
     /**
      * @psalm-param Id<User> $id
      */
-    private function __construct(
+    protected function __construct(
         Id $id,
         string $fullName,
         string $cpfOrCnpj,
@@ -64,25 +62,6 @@ class User
         $this->wallet = $wallet;
 
         $this->domainEvents = [];
-    }
-
-    /**
-     * @psalm-param Id<User> $id
-     */
-    public static function create(
-        Id $id,
-        string $fullName,
-        string $cpfOrCnpj,
-        string $email,
-        Wallet $wallet
-    ): self {
-        return new self(
-            $id,
-            $fullName,
-            $cpfOrCnpj,
-            $email,
-            $wallet
-        );
     }
 
     /**
@@ -120,4 +99,6 @@ class User
     {
         return array_splice($this->domainEvents, 0);
     }
+
+    abstract public function type() : string;
 }

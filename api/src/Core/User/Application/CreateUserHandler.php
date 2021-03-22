@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
+use MiniPay\Core\User\Domain\DefaultUser;
 use MiniPay\Core\User\Domain\Exception\CannotCreateUser;
 use MiniPay\Core\User\Domain\Exception\UserAlreadyExists;
-use MiniPay\Core\User\Domain\StoreKeeper;
+use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
 use MiniPay\Core\User\Domain\Wallet;
@@ -44,11 +45,11 @@ class CreateUserHandler implements MessageHandlerInterface
         $this->throwExceptionIfUserAlreadyExistsWithEmail($command->email);
 
         $user = null;
-        if ($command->type === User::USER_TYPE) {
+        if ($command->type === DefaultUser::USER_TYPE) {
             $user = $this->createDefaultUser($command);
         }
 
-        if ($command->type === StoreKeeper::USER_TYPE) {
+        if ($command->type === StoreKeeperUser::USER_TYPE) {
             $user = $this->createStorekeeperUser($command);
         }
 
@@ -59,7 +60,7 @@ class CreateUserHandler implements MessageHandlerInterface
 
     private function throwExceptionIfUserTypeIsInvalid(string $type): void
     {
-        if (in_array($type, [User::USER_TYPE, StoreKeeper::USER_TYPE]) === false) {
+        if (in_array($type, [DefaultUser::USER_TYPE, StoreKeeperUser::USER_TYPE]) === false) {
             throw CannotCreateUser::WithType($type);
         }
     }
@@ -95,7 +96,7 @@ class CreateUserHandler implements MessageHandlerInterface
 
     private function createStorekeeperUser(CreateUser $command): User
     {
-        return StoreKeeper::create(
+        return StoreKeeperUser::create(
             Id::fromString($command->id ?? ''),
             $command->fullName,
             $command->cpfOrCnpj,
