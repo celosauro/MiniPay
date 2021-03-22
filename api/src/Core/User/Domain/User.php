@@ -93,6 +93,16 @@ abstract class User
         return $this->wallet->balance();
     }
 
+    public function withdraw(float $value) : void
+    {
+        $this->wallet->withdraw($value);
+    }
+
+    public function receive(float $value)
+    {
+        $this->wallet->receive($value);
+    }
+
     /**
      * @return DomainEvent[]
      */
