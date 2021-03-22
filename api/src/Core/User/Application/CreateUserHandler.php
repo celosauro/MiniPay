@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
+use DateTimeImmutable;
 use MiniPay\Core\User\Domain\DefaultUser;
+use MiniPay\Core\User\Domain\Event\UserCreated;
 use MiniPay\Core\User\Domain\Exception\CannotCreateUser;
 use MiniPay\Core\User\Domain\Exception\UserAlreadyExists;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
@@ -56,6 +58,8 @@ class CreateUserHandler implements MessageHandlerInterface
         assert($user instanceof User);
 
         $this->repository->save($user);
+
+        $this->dispatchUserCreatedEvent($user->id()->toString());
     }
 
     private function throwExceptionIfUserTypeIsInvalid(string $type): void
@@ -103,5 +107,14 @@ class CreateUserHandler implements MessageHandlerInterface
             $command->email,
             new Wallet($command->walletAmount)
         );
+    }
+
+    private function dispatchUserCreatedEvent(string $userId): void
+    {
+        $event = UserCreated::create($userId, new DateTimeImmutable());
+
+        $this->eventStore->append($event);
+
+        $this->eventBus->dispatch($event);
     }
 }
