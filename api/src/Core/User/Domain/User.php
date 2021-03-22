@@ -12,6 +12,7 @@ use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
 use function array_splice;
+use function preg_replace;
 
 /**
  * @ORM\Entity()
@@ -102,8 +103,8 @@ abstract class User
 
     abstract public function type(): string;
 
-    private function cleanNonDigitCharacter(string $string) : string
+    private function cleanNonDigitCharacter(string $string): string
     {
-        return preg_replace('/[^0-9]/', '', $string);
+        return preg_replace('/[^0-9]/', '', $string) ?? '';
     }
 }
