@@ -5,43 +5,31 @@ declare(strict_types=1);
 namespace MiniPay\Core\User\Domain\Exception;
 
 use Lcobucci\ErrorHandling\Problem\Detailed;
-use Lcobucci\ErrorHandling\Problem\ResourceNotFound;
+use Lcobucci\ErrorHandling\Problem\Forbidden;
 use Lcobucci\ErrorHandling\Problem\Titled;
 use MiniPay\Framework\Id\Domain\Id;
 use RuntimeException;
 
-final class UserNotFound extends RuntimeException implements ResourceNotFound, Titled, Detailed
+final class UserAlreadyExists extends RuntimeException implements Forbidden, Titled, Detailed
 {
-    private string $id;
-
     private string $cpfOrCnpj;
 
     private string $email;
 
-    public static function withId(string $id): self
+    public static function withCpfOrCnpj(string $cpfOrCnpj): self
     {
         $exception = new self(
-            sprintf('User not found with given ID %s.', $id)
-        );
-        $exception->id = $id;
-
-        return $exception;
-    }
-
-    public static function withCpfOrCnpj(string $cpfOrCnpj)
-    {
-        $exception = new self(
-            sprintf('User not found with given CPF/CNPJ %s.', $cpfOrCnpj)
+            sprintf('User already exists with given CPF/CNPJ %s.', $cpfOrCnpj)
         );
         $exception->cpfOrCnpj = $cpfOrCnpj;
 
         return $exception;
     }
 
-    public static function withEmail(string $email)
+    public static function withEmail(string $email): self
     {
         $exception = new self(
-            sprintf('User not found with given email %s.', $email)
+            sprintf('User already exists with given email %s.', $email)
         );
         $exception->email = $email;
 
@@ -50,7 +38,7 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
 
     public function getTitle(): string
     {
-        return 'User not found';
+        return 'User already exists';
     }
 
     /**
@@ -60,10 +48,6 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
      */
     public function getExtraDetails(): array
     {
-        if (empty($this->id) === false) {
-            return ['ID' => $this->id];
-        }
-
         if (empty($this->cpfOrCnpj) === false) {
             return ['CPF/CNPJ' => $this->cpfOrCnpj];
         }
