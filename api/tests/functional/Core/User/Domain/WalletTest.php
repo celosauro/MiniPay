@@ -52,4 +52,20 @@ class WalletTest extends TestCase
 
         $account->withdraw($amountToWithdraw);
     }
+
+    /**
+     * @test
+     */
+    public function shouldReceiveMoney(): void
+    {
+        $initialAmount = 100.00;
+        $amountToReceive = 90.00;
+        $expectedBalance = 190.00;
+
+        $account = new Wallet($initialAmount);
+
+        $account->receive($amountToReceive);
+
+        $this->assertEquals($expectedBalance, $account->balance());
+    }
 }

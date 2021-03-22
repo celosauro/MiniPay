@@ -33,4 +33,9 @@ final class Wallet
 
         $this->amount -= $amountToWithdraw;
     }
+
+    public function receive(float $amountToReceive): void
+    {
+        $this->amount += $amountToReceive;
+    }
 }
