@@ -7,8 +7,9 @@ namespace MiniPay\Core\User\Domain\Exception;
 use Lcobucci\ErrorHandling\Problem\Detailed;
 use Lcobucci\ErrorHandling\Problem\ResourceNotFound;
 use Lcobucci\ErrorHandling\Problem\Titled;
-use MiniPay\Framework\Id\Domain\Id;
 use RuntimeException;
+
+use function sprintf;
 
 final class UserNotFound extends RuntimeException implements ResourceNotFound, Titled, Detailed
 {
@@ -28,7 +29,7 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
         return $exception;
     }
 
-    public static function withCpfOrCnpj(string $cpfOrCnpj)
+    public static function withCpfOrCnpj(string $cpfOrCnpj): self
     {
         $exception = new self(
             sprintf('User not found with given CPF/CNPJ %s.', $cpfOrCnpj)
@@ -38,7 +39,7 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
         return $exception;
     }
 
-    public static function withEmail(string $email)
+    public static function withEmail(string $email): self
     {
         $exception = new self(
             sprintf('User not found with given email %s.', $email)

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
-use Minipay\Framework\Id\Domain\Id;
+use MiniPay\Framework\Id\Domain\Id;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -31,9 +31,7 @@ final class CreateUser
      */
     public string $email;
 
-    /**
-     * @Assert\Type("float")
-     */
+    /** @Assert\Type("float") */
     public float $walletAmount;
 
     /**
@@ -57,5 +55,4 @@ final class CreateUser
         $this->walletAmount = $walletAmount;
         $this->type = $type;
     }
-
 }

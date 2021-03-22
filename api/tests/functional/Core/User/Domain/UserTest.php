@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Domain;
 
-use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Core\User\Domain\User;
+use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 

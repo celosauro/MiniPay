@@ -6,10 +6,10 @@ namespace MiniPay\Core\User\Domain\Exception;
 
 use Lcobucci\ErrorHandling\Problem\Detailed;
 use Lcobucci\ErrorHandling\Problem\InvalidRequest;
-use Lcobucci\ErrorHandling\Problem\ResourceNotFound;
 use Lcobucci\ErrorHandling\Problem\Titled;
-use MiniPay\Framework\Id\Domain\Id;
 use RuntimeException;
+
+use function sprintf;
 
 final class CannotCreateUser extends RuntimeException implements InvalidRequest, Titled, Detailed
 {
@@ -38,7 +38,7 @@ final class CannotCreateUser extends RuntimeException implements InvalidRequest,
     public function getExtraDetails(): array
     {
         return [
-            'Type' => $this->type
+            'Type' => $this->type,
         ];
     }
 }

@@ -7,8 +7,9 @@ namespace MiniPay\Core\User\Domain\Exception;
 use Lcobucci\ErrorHandling\Problem\Detailed;
 use Lcobucci\ErrorHandling\Problem\Forbidden;
 use Lcobucci\ErrorHandling\Problem\Titled;
-use MiniPay\Framework\Id\Domain\Id;
 use RuntimeException;
+
+use function sprintf;
 
 final class UserAlreadyExists extends RuntimeException implements Forbidden, Titled, Detailed
 {

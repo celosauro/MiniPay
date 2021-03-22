@@ -9,7 +9,6 @@ use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher;
 use MiniPay\Framework\Id\Domain\Id;
-use MiniPay\Core\User\Domain\Exception\UserNotFound;
 
 class DoctrineUserRepository implements UserRepository
 {
@@ -25,7 +24,7 @@ class DoctrineUserRepository implements UserRepository
         $this->publisher = $publisher;
     }
 
-    public function save(User $user) : void
+    public function save(User $user): void
     {
         $this->objectManager->persist($user);
         $this->objectManager->flush();
@@ -38,26 +37,24 @@ class DoctrineUserRepository implements UserRepository
     /**
      * @psalm-param Id<User> $id
      */
-    public function findOneByIdOrNull(Id $id) : User
+    public function findOneByIdOrNull(Id $id): ?User
     {
-        $user = $this->objectManager->getRepository(self::ENTITY)->findOneBy([
-            'id' => $id,
-        ]);
+        $user = $this->objectManager->getRepository(self::ENTITY)->findOneBy(['id' => $id]);
 
         if ($user instanceof User) {
             return $user;
         }
 
-        throw UserNotFound::withId($id->toString());
+        return null;
     }
 
     public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj): ?User
     {
-        // TODO: Implement findOneByCpfOrCnpjOrNull() method.
+        return null;
     }
 
     public function findOneByEmailOrNull(string $email): ?User
     {
-        // TODO: Implement findOneByEmailOrNull() method.
+        return null;
     }
 }

@@ -1,30 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniPay\Tests\Core\User\Application;
 
 use MiniPay\Core\User\Application\CreateUser;
 use MiniPay\Core\User\Application\CreateUserHandler;
 use MiniPay\Core\User\Domain\Exception\CannotCreateUser;
 use MiniPay\Core\User\Domain\Exception\UserAlreadyExists;
-use MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository;
+use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Infrastructure\Persistence\InMemoryUserRepository;
-use MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher;
-use MiniPay\Framework\DomainEvent\Domain\PersistDomainEventSubscriber;
 use MiniPay\Framework\DomainEvent\Infrastructure\InMemoryEventStore;
 use MiniPay\Framework\Id\Domain\Id;
-use MiniPay\Tests\Framework\DoctrineTestCase;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+use function assert;
+
 class CreateUserHandlerTest extends TestCase
 {
     /**
      * @test
      */
-    public function shouldCreateAnUser() : void
+    public function shouldCreateAnUser(): void
     {
         $repository = new InMemoryUserRepository();
         $eventBus = new MessageBus();
@@ -46,7 +47,8 @@ class CreateUserHandlerTest extends TestCase
 
         $handler($command);
 
-        $createdUser = $repository->findOneByIdOrNull(Id::fromString($command->id));
+        $createdUser = $repository->findOneByIdOrNull(Id::fromString($command->id ?? ''));
+        assert($createdUser instanceof User);
 
         $this->assertNotNull($createdUser);
         $this->assertEquals($command->cpfOrCnpj, $createdUser->cpfOrCnpj());
@@ -58,7 +60,7 @@ class CreateUserHandlerTest extends TestCase
     /**
      * @test
      */
-    public function shouldThrowCannotCreateUserWithInvalidType() : void
+    public function shouldThrowCannotCreateUserWithInvalidType(): void
     {
         $this->expectException(CannotCreateUser::class);
 
@@ -86,7 +88,7 @@ class CreateUserHandlerTest extends TestCase
     /**
      * @test
      */
-    public function shouldThrowUserAlreadyExistsWhenCreateWithSameCpfOrCnpf() : void
+    public function shouldThrowUserAlreadyExistsWhenCreateWithSameCpfOrCnpf(): void
     {
         $this->expectException(UserAlreadyExists::class);
         $this->expectExceptionMessage('User already exists with given CPF/CNPJ 01257534033.');
@@ -117,7 +119,7 @@ class CreateUserHandlerTest extends TestCase
     /**
      * @test
      */
-    public function shouldThrowUserAlreadyExistsWhenCreateWithSameEmail() : void
+    public function shouldThrowUserAlreadyExistsWhenCreateWithSameEmail(): void
     {
         $this->expectException(UserAlreadyExists::class);
         $this->expectExceptionMessage('User already exists with given email foo@bar.com.');

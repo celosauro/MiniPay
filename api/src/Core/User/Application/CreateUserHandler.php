@@ -15,6 +15,9 @@ use MiniPay\Framework\Id\Domain\Id;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+use function assert;
+use function in_array;
+
 class CreateUserHandler implements MessageHandlerInterface
 {
     private MessageBusInterface $eventBus;
@@ -33,13 +36,14 @@ class CreateUserHandler implements MessageHandlerInterface
         $this->repository = $repository;
     }
 
-    public function __invoke(CreateUser $command) : void
+    public function __invoke(CreateUser $command): void
     {
         $this->throwExceptionIfUserTypeIsInvalid($command->type);
 
         $this->throwExceptionIfUserAlreadyExistsWithCpfOrCnpj($command->cpfOrCnpj);
         $this->throwExceptionIfUserAlreadyExistsWithEmail($command->email);
 
+        $user = null;
         if ($command->type === User::USER_TYPE) {
             $user = $this->createDefaultUser($command);
         }
@@ -48,17 +52,19 @@ class CreateUserHandler implements MessageHandlerInterface
             $user = $this->createStorekeeperUser($command);
         }
 
+        assert($user instanceof User);
+
         $this->repository->save($user);
     }
 
-    private function throwExceptionIfUserTypeIsInvalid(string $type)
+    private function throwExceptionIfUserTypeIsInvalid(string $type): void
     {
         if (in_array($type, [User::USER_TYPE, StoreKeeper::USER_TYPE]) === false) {
             throw CannotCreateUser::WithType($type);
         }
     }
 
-    private function throwExceptionIfUserAlreadyExistsWithCpfOrCnpj(string $cpfOrCnpj)
+    private function throwExceptionIfUserAlreadyExistsWithCpfOrCnpj(string $cpfOrCnpj): void
     {
         $foundUserByCpfOrCnpj = $this->repository->findOneByCpfOrCnpjOrNull($cpfOrCnpj);
 
@@ -67,7 +73,7 @@ class CreateUserHandler implements MessageHandlerInterface
         }
     }
 
-    private function throwExceptionIfUserAlreadyExistsWithEmail(string $email)
+    private function throwExceptionIfUserAlreadyExistsWithEmail(string $email): void
     {
         $foundUserByEmail = $this->repository->findOneByEmailOrNull($email);
 
@@ -76,10 +82,10 @@ class CreateUserHandler implements MessageHandlerInterface
         }
     }
 
-    private function createDefaultUser(CreateUser $command) : User
+    private function createDefaultUser(CreateUser $command): User
     {
         return User::create(
-            Id::fromString($command->id),
+            Id::fromString($command->id ?? ''),
             $command->fullName,
             $command->cpfOrCnpj,
             $command->email,
@@ -87,10 +93,10 @@ class CreateUserHandler implements MessageHandlerInterface
         );
     }
 
-    private function createStorekeeperUser(CreateUser $command) : User
+    private function createStorekeeperUser(CreateUser $command): User
     {
         return StoreKeeper::create(
-            Id::fromString($command->id),
+            Id::fromString($command->id ?? ''),
             $command->fullName,
             $command->cpfOrCnpj,
             $command->email,
