@@ -104,7 +104,7 @@
             "phpcbf"
         ],
         "coverage": [
-            "phpunit --coverage-html var/coverage/"
+            "XDEBUG_MODE=coverage phpunit --coverage-html var/coverage/"
         ],
         "worker:queue:consumer": [
             "console messenger:consume async --limit=20 -vvv --no-interaction"
