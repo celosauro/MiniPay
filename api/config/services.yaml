@@ -25,9 +25,6 @@ services:
     MiniPay\Framework\:
         resource: '../src/Framework/*'
 
-    MiniPay\Framework\Serializer\Symfony\ArrayNormalizer:
-        tags: [ 'serializer.normalizer' ]
-
     MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener:
         class: MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener
         arguments:
@@ -39,8 +36,8 @@ services:
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     controllers:
-        namespace: MiniPay\
-        resource: '../src/*/Infrastructure/Controller'
+        namespace: MiniPay\Core\User\Infrastructure\Controller\
+        resource: '../src/Core/User/Infrastructure/Controller'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
