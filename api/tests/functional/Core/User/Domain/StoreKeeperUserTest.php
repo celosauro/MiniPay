@@ -9,7 +9,7 @@ use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 
-class DefaultUserTest extends TestCase
+class StoreKeeperUserTest extends TestCase
 {
     /**
      * @test
