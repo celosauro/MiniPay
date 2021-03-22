@@ -50,11 +50,23 @@ class DoctrineUserRepository implements UserRepository
 
     public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj): ?User
     {
+        $user = $this->objectManager->getRepository(self::ENTITY)->findOneBy(['cpfOrCnpj' => $cpfOrCnpj]);
+
+        if ($user instanceof User) {
+            return $user;
+        }
+
         return null;
     }
 
     public function findOneByEmailOrNull(string $email): ?User
     {
+        $user = $this->objectManager->getRepository(self::ENTITY)->findOneBy(['email' => $email]);
+
+        if ($user instanceof User) {
+            return $user;
+        }
+
         return null;
     }
 }

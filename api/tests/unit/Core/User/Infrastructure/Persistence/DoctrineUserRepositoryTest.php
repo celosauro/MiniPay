@@ -44,7 +44,7 @@ class DoctrineUserRepositoryTest extends DoctrineTestCase
     public function shouldSaveADefaultUserInRepository(): void
     {
         $id = Id::generate();
-        $user = $this->createUser($id);
+        $user = $this->createDefaultUser($id);
 
         $this->assertFalse($this->entityManager->contains($user));
 
@@ -55,6 +55,7 @@ class DoctrineUserRepositoryTest extends DoctrineTestCase
         assert($foundUser instanceof User);
 
         $this->assertEquals($foundUser, $user);
+        $this->assertEquals($user::USER_TYPE, $foundUser->type());
         $this->assertInstanceOf(User::class, $foundUser);
         $this->assertTrue($this->entityManager->contains($user));
         $this->assertEmpty($foundUser->domainEvents());
@@ -77,15 +78,54 @@ class DoctrineUserRepositoryTest extends DoctrineTestCase
         assert($foundUser instanceof User);
 
         $this->assertEquals($foundUser, $user);
+        $this->assertEquals($user::USER_TYPE, $foundUser->type());
         $this->assertInstanceOf(User::class, $foundUser);
         $this->assertTrue($this->entityManager->contains($user));
         $this->assertEmpty($foundUser->domainEvents());
     }
 
     /**
+     * @test
+     */
+    public function shouldFindUserByCpfOrCnpj(): void
+    {
+        $id = Id::generate();
+        $user = $this->createDefaultUser($id);
+
+        $this->assertFalse($this->entityManager->contains($user));
+
+        $this->repository->save($user);
+        $this->entityManager->flush();
+
+        $foundUser = $this->repository->findOneByCpfOrCnpjOrNull($user->cpfOrCnpj());
+        assert($foundUser instanceof User);
+
+        $this->assertEquals($foundUser, $user);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFindUserByEmail(): void
+    {
+        $id = Id::generate();
+        $user = $this->createDefaultUser($id);
+
+        $this->assertFalse($this->entityManager->contains($user));
+
+        $this->repository->save($user);
+        $this->entityManager->flush();
+
+        $foundUser = $this->repository->findOneByEmailOrNull($user->email());
+        assert($foundUser instanceof User);
+
+        $this->assertEquals($foundUser, $user);
+    }
+
+    /**
      * @psalm-param Id<User> $id
      */
-    private function createUser(Id $id): User
+    private function createDefaultUser(Id $id): DefaultUser
     {
         return DefaultUser::create(
             $id,
@@ -99,7 +139,7 @@ class DoctrineUserRepositoryTest extends DoctrineTestCase
     /**
      * @psalm-param Id<User> $id
      */
-    private function createStorekeeperUser(Id $id): User
+    private function createStorekeeperUser(Id $id): StoreKeeperUser
     {
         return StoreKeeperUser::create(
             $id,
