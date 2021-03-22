@@ -18,7 +18,8 @@ class DefaultUserTest extends TestCase
     {
         $id = Id::fromString('user-id');
         $fullName = 'Foo Bar';
-        $cpfOrCnpj = '88498957044';
+        $cpfOrCnpjCleaned = '88498957044';
+        $cpfOrCnpj = '884.989.570-44';
         $email = 'foobar@test.com';
         $balance = 99.99;
         $account = new Wallet($balance);
@@ -33,7 +34,7 @@ class DefaultUserTest extends TestCase
 
         $this->assertTrue($id->isEqualTo($user->id()));
         $this->assertEquals($fullName, $user->fullName());
-        $this->assertEquals($cpfOrCnpj, $user->cpfOrCnpj());
+        $this->assertEquals($cpfOrCnpjCleaned, $user->cpfOrCnpj());
         $this->assertEquals($email, $user->email());
         $this->assertEquals($balance, $user->balance());
         $this->assertEquals($user::USER_TYPE, $user->type());

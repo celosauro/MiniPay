@@ -57,7 +57,7 @@ abstract class User
     ) {
         $this->id = $id;
         $this->fullName = $fullName;
-        $this->cpfOrCnpj = $cpfOrCnpj;
+        $this->cpfOrCnpj = $this->cleanNonDigitCharacter($cpfOrCnpj);
         $this->email = $email;
         $this->wallet = $wallet;
 
@@ -101,4 +101,9 @@ abstract class User
     }
 
     abstract public function type(): string;
+
+    private function cleanNonDigitCharacter(string $string) : string
+    {
+        return preg_replace('/[^0-9]/', '', $string);
+    }
 }
