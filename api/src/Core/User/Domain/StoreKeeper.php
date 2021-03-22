@@ -11,5 +11,5 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class StoreKeeper extends User
 {
-    protected const USER_TYPE = 'storekeeper';
+    public const USER_TYPE = 'storekeeper';
 }

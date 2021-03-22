@@ -22,7 +22,7 @@ use function array_splice;
  */
 class User
 {
-    protected const USER_TYPE = 'default';
+    public const USER_TYPE = 'default';
 
     /**
      * @ORM\Id

@@ -36,11 +36,18 @@ final class CreateUser
      */
     public float $walletAmount;
 
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Choice("default", "storekeeper")
+     */
+    public string $type;
+
     public function __construct(
         string $cpfOrCnpj,
         string $fullName,
         string $email,
-        float $walletAmount
+        float $walletAmount,
+        string $type
     ) {
         $this->id = Id::generate()->toString();
 
@@ -48,6 +55,7 @@ final class CreateUser
         $this->fullName = $fullName;
         $this->email = $email;
         $this->walletAmount = $walletAmount;
+        $this->type = $type;
     }
 
 }
