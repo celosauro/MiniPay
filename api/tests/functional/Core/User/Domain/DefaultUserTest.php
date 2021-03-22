@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Domain;
 
-use MiniPay\Core\User\Domain\User;
+use MiniPay\Core\User\Domain\DefaultUser;
 use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 
-class UserTest extends TestCase
+class DefaultUserTest extends TestCase
 {
     /**
      * @test
@@ -23,7 +23,7 @@ class UserTest extends TestCase
         $balance = 99.99;
         $account = new Wallet($balance);
 
-        $user = User::create(
+        $user = DefaultUser::create(
             $id,
             $fullName,
             $cpfOrCnpj,

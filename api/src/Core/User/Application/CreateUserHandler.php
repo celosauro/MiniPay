@@ -85,7 +85,7 @@ class CreateUserHandler implements MessageHandlerInterface
 
     private function createDefaultUser(CreateUser $command): User
     {
-        return User::create(
+        return DefaultUser::create(
             Id::fromString($command->id ?? ''),
             $command->fullName,
             $command->cpfOrCnpj,

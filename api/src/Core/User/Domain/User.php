@@ -100,5 +100,5 @@ abstract class User
         return array_splice($this->domainEvents, 0);
     }
 
-    abstract public function type() : string;
+    abstract public function type(): string;
 }

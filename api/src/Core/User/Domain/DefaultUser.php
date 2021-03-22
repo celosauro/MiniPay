@@ -33,7 +33,7 @@ class DefaultUser extends User
         );
     }
 
-    public function type() : string
+    public function type(): string
     {
         return self::USER_TYPE;
     }
