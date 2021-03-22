@@ -15,36 +15,12 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
 {
     private string $id;
 
-    private string $cpfOrCnpj;
-
-    private string $email;
-
     public static function withId(string $id): self
     {
         $exception = new self(
             sprintf('User not found with given ID %s.', $id)
         );
         $exception->id = $id;
-
-        return $exception;
-    }
-
-    public static function withCpfOrCnpj(string $cpfOrCnpj): self
-    {
-        $exception = new self(
-            sprintf('User not found with given CPF/CNPJ %s.', $cpfOrCnpj)
-        );
-        $exception->cpfOrCnpj = $cpfOrCnpj;
-
-        return $exception;
-    }
-
-    public static function withEmail(string $email): self
-    {
-        $exception = new self(
-            sprintf('User not found with given email %s.', $email)
-        );
-        $exception->email = $email;
 
         return $exception;
     }
@@ -61,18 +37,6 @@ final class UserNotFound extends RuntimeException implements ResourceNotFound, T
      */
     public function getExtraDetails(): array
     {
-        if (empty($this->id) === false) {
-            return ['ID' => $this->id];
-        }
-
-        if (empty($this->cpfOrCnpj) === false) {
-            return ['CPF/CNPJ' => $this->cpfOrCnpj];
-        }
-
-        if (empty($this->email) === false) {
-            return ['Email' => $this->email];
-        }
-
-        return [];
+        return ['ID' => $this->id];
     }
 }
