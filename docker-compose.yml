@@ -5,14 +5,13 @@ services:
   mysql:
     image: mysql:8
     ports:
-      - 3307:3306
+      - 3306:3306
     command: --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=app
 
   php:
-    image: minipay_php
     build:
       context: ./api
       dockerfile: ./Dockerfile
@@ -28,23 +27,22 @@ services:
       - 9000
     volumes:
       - ./api:/app
+    env_file:
+      - ./api/.env
     environment:
       - PHP_IDE_CONFIG=serverName=${XDEBUG_IDE_SERVERNAME:-php}
     depends_on:
       - mysql
 
   nginx:
-    image: minipay_nginx
     build:
-      context: ./api
-      dockerfile: ./docker/nginx/Dockerfile
+        context: ./api
+        dockerfile: ./docker/nginx/Dockerfile
     links:
       - php
-    volumes:
-      - "./api/public:/var/www/app/public"
     ports:
-      - 8080:80
-      - 444:443
+      - 80:80
+      - 443:443
     environment:
       - API_HOST=php
       - API_PORT=9000
