@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Domain\Event;
 
-use MiniPay\Core\User\Application\SendTransactionReceivedNotification;
+use MiniPay\Core\User\Application\Async\SendTransactionReceivedNotification;
 use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventSubscriber;
 use Symfony\Component\Messenger\MessageBusInterface;

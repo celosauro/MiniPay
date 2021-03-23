@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Application;
 
-use MiniPay\Core\User\Application\SendTransactionReceivedNotification;
-use MiniPay\Core\User\Application\SendTransactionReceivedNotificationHandler;
+use MiniPay\Core\User\Application\Async\SendTransactionReceivedNotification;
+use MiniPay\Core\User\Application\Async\SendTransactionReceivedNotificationHandler;
 use MiniPay\Core\User\Domain\TransactionReceivedNotificator;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
