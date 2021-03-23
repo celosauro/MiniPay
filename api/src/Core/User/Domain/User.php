@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
 use MiniPay\Core\User\Domain\Event\TransactionReceived;
 use MiniPay\Core\User\Domain\Event\TransactionWithdrew;
+use MiniPay\Core\User\Domain\Event\UserCreated;
 use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
@@ -65,7 +66,10 @@ abstract class User
         $this->email = $email;
         $this->wallet = $wallet;
 
-        $this->domainEvents = [];
+        $this->domainEvents[] = UserCreated::create(
+            $this->id()->toString(),
+            new DateTimeImmutable()
+        );
     }
 
     /**

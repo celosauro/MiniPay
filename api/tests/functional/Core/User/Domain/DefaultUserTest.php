@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Domain;
 
-use DateTimeImmutable;
 use MiniPay\Core\User\Domain\DefaultUser;
 use MiniPay\Core\User\Domain\Event\TransactionReceived;
 use MiniPay\Core\User\Domain\Event\TransactionWithdrew;
+use MiniPay\Core\User\Domain\Event\UserCreated;
 use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
 
 class DefaultUserTest extends TestCase
 {
@@ -41,6 +43,14 @@ class DefaultUserTest extends TestCase
         $this->assertEquals($email, $user->email());
         $this->assertEquals($balance, $user->balance());
         $this->assertEquals($user::USER_TYPE, $user->type());
+
+        $events = $user->domainEvents();
+
+        $userCreatedEvent = $events[0];
+        assert($userCreatedEvent instanceof UserCreated);
+
+        $this->assertCount(1, $events);
+        $this->assertEquals($id->toString(), $userCreatedEvent->userId);
     }
 
     /**
@@ -58,8 +68,6 @@ class DefaultUserTest extends TestCase
         $amountToWithdraw = 50.0;
         $exceptedBalanceAfterWithdraw = 50.0;
 
-        $expectedEvent = TransactionWithdrew::create($id->toString(), $amountToWithdraw, new DateTimeImmutable());
-
         $user = DefaultUser::create(
             $id,
             $fullName,
@@ -72,10 +80,14 @@ class DefaultUserTest extends TestCase
 
         $events = $user->domainEvents();
 
+        $transactionWithdrewEvent = $events[1];
+        assert($transactionWithdrewEvent instanceof TransactionWithdrew);
+
         $this->assertEquals($exceptedBalanceAfterWithdraw, $user->balance());
-        $this->assertCount(1, $events);
-        $this->assertEquals($id->toString(), $expectedEvent->userId);
-        $this->assertEquals($amountToWithdraw, $expectedEvent->amount);
+        $this->assertCount(2, $events);
+
+        $this->assertEquals($id->toString(), $transactionWithdrewEvent->userId);
+        $this->assertEquals($amountToWithdraw, $transactionWithdrewEvent->amount);
     }
 
     /**
@@ -93,8 +105,6 @@ class DefaultUserTest extends TestCase
         $amountToReceive = 50.0;
         $exceptedBalanceAfterReceive = 150.0;
 
-        $expectedEvent = TransactionReceived::create($id->toString(), $amountToReceive, new DateTimeImmutable());
-
         $user = DefaultUser::create(
             $id,
             $fullName,
@@ -107,9 +117,12 @@ class DefaultUserTest extends TestCase
 
         $events = $user->domainEvents();
 
+        $transactionReceivedEvent = $events[1];
+        assert($transactionReceivedEvent instanceof TransactionReceived);
+
         $this->assertEquals($exceptedBalanceAfterReceive, $user->balance());
-        $this->assertCount(1, $events);
-        $this->assertEquals($id->toString(), $expectedEvent->userId);
-        $this->assertEquals($amountToReceive, $expectedEvent->amount);
+        $this->assertCount(2, $events);
+        $this->assertEquals($id->toString(), $transactionReceivedEvent->userId);
+        $this->assertEquals($amountToReceive, $transactionReceivedEvent->amount);
     }
 }
