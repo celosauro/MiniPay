@@ -15,6 +15,7 @@ use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Core\User\Infrastructure\Persistence\InMemoryUserRepository;
 use MiniPay\Framework\DomainEvent\Infrastructure\InMemoryEventStore;
 use MiniPay\Framework\Id\Domain\Id;
+use MiniPay\Tests\Core\User\Infrastructure\FakeTransactionAuthClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -42,7 +43,8 @@ class SendMoneyHandlerTest extends TestCase
         ]);
         $eventBus = new MessageBus();
         $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository);
+        $transactionAuthClient = new FakeTransactionAuthClient(true);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -78,7 +80,8 @@ class SendMoneyHandlerTest extends TestCase
         ]);
         $eventBus = new MessageBus();
         $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository);
+        $transactionAuthClient = new FakeTransactionAuthClient(true);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -114,7 +117,8 @@ class SendMoneyHandlerTest extends TestCase
         ]);
         $eventBus = new MessageBus();
         $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository);
+        $transactionAuthClient = new FakeTransactionAuthClient(true);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -143,7 +147,8 @@ class SendMoneyHandlerTest extends TestCase
         ]);
         $eventBus = new MessageBus();
         $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository);
+        $transactionAuthClient = new FakeTransactionAuthClient(true);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
 
         $command = new SendMoney(
             Id::fromString('non-existent-payer-user')->toString(),
@@ -172,7 +177,8 @@ class SendMoneyHandlerTest extends TestCase
         ]);
         $eventBus = new MessageBus();
         $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository);
+        $transactionAuthClient = new FakeTransactionAuthClient(true);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),

@@ -8,6 +8,7 @@ parameters:
     env(EXCEPTION_LISTENER_MODE): 'production'
     event.store: MiniPay\Framework\DomainEvent\Infrastructure\DoctrineEventStore
     user.repository: MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository
+    transaction.auth.client: MiniPay\Core\User\Infrastructure\TransactionAuthClient
 
 services:
     # default configuration for services in *this* file
@@ -66,3 +67,6 @@ services:
     # Repository
     MiniPay\Core\User\Domain\UserRepository:
         class: '%user.repository%'
+
+    MiniPay\Core\User\Domain\TransactionAuth:
+        class: '%transaction.auth.client%'

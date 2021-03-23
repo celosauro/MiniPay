@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace MiniPay\Core\User\Application;
 
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
+use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
+use MiniPay\Core\User\Domain\TransactionAuth;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
 use MiniPay\Framework\DomainEvent\Domain\EventStore;
@@ -24,14 +26,18 @@ class SendMoneyHandler implements MessageHandlerInterface
 
     private EventStore $eventStore;
 
+    private TransactionAuth $transactionAuthClient;
+
     public function __construct(
         MessageBusInterface $eventBus,
         EventStore $eventStore,
-        UserRepository $repository
+        UserRepository $repository,
+        TransactionAuth $transactionAuthClient
     ) {
         $this->eventBus = $eventBus;
         $this->eventStore = $eventStore;
         $this->repository = $repository;
+        $this->transactionAuthClient = $transactionAuthClient;
     }
 
     public function __invoke(SendMoney $command): void
@@ -45,6 +51,8 @@ class SendMoneyHandler implements MessageHandlerInterface
 
         assert($payer instanceof User);
         assert($payee instanceof User);
+
+        $this->throwExceptionIfTransactionIsNotAuthorized($command->payer, $command->payee, $command->value);
 
         $payer->withdraw($command->value);
         $payee->receive($command->value);
@@ -69,12 +77,10 @@ class SendMoneyHandler implements MessageHandlerInterface
         }
     }
 
-//    private function dispatchUserCreatedEvent(string $userId): void
-//    {
-//        $event = UserCreated::create($userId, new DateTimeImmutable());
-//
-//        $this->eventStore->append($event);
-//
-//        $this->eventBus->dispatch($event);
-//    }
+    private function throwExceptionIfTransactionIsNotAuthorized(string $payerId, string $payeeId, float $value): void
+    {
+        if ($this->transactionAuthClient->auth() === false) {
+            throw TransactionUnauthorized::withData($payerId, $payeeId, $value);
+        }
+    }
 }
