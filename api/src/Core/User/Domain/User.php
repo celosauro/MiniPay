@@ -44,7 +44,7 @@ abstract class User
     protected Wallet $wallet;
 
     /** @var DomainEvent[] */
-    protected array $domainEvents;
+    protected array $domainEvents = [];
 
     /**
      * @psalm-param Id<User> $id
