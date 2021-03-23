@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
+use DateTimeImmutable;
+use MiniPay\Core\User\Domain\Event\TransactionCreated;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
 use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
@@ -60,7 +62,11 @@ class SendMoneyHandler implements MessageHandlerInterface
         $this->repository->save($payer);
         $this->repository->save($payee);
 
-//        $this->dispatchUserCreatedEvent($user->id()->toString());
+        $this->dispatchTransactionCreatedEvent(
+            $command->payer,
+            $command->payee,
+            $command->value
+        );
     }
 
     private function throwExceptionIfUserNotFound(?User $payer, string $userId): void
@@ -82,5 +88,19 @@ class SendMoneyHandler implements MessageHandlerInterface
         if ($this->transactionAuthClient->auth() === false) {
             throw TransactionUnauthorized::withData($payerId, $payeeId, $value);
         }
+    }
+
+    private function dispatchTransactionCreatedEvent(string $payerId, string $payeeId, float $value): void
+    {
+        $event = TransactionCreated::create(
+            $payerId,
+            $payeeId,
+            $value,
+            new DateTimeImmutable()
+        );
+
+        $this->eventStore->append($event);
+
+        $this->eventBus->dispatch($event);
     }
 }

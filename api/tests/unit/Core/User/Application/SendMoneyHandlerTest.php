@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Application;
 
+use DateTimeImmutable;
 use MiniPay\Core\User\Application\SendMoney;
 use MiniPay\Core\User\Application\SendMoneyHandler;
 use MiniPay\Core\User\Domain\DefaultUser;
+use MiniPay\Core\User\Domain\Event\TransactionCreated;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
 use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
@@ -24,6 +26,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 use function assert;
+use function get_class;
 
 class SendMoneyHandlerTest extends TestCase
 {
@@ -37,6 +40,12 @@ class SendMoneyHandlerTest extends TestCase
         $valueToSend = 50;
         $expectedPayerBalance = 50;
         $expectedPayeeBalance = 150;
+        $expectedEvents = TransactionCreated::create(
+            $payerId->toString(),
+            $payeeId->toString(),
+            $valueToSend,
+            new DateTimeImmutable()
+        );
 
         $repository = new InMemoryUserRepository([
             $this->createDefaultUser($payerId),
@@ -62,6 +71,13 @@ class SendMoneyHandlerTest extends TestCase
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
+
+        $events = $eventStore->allStoredEvents();
+        $this->assertCount(1, $events);
+        $this->assertEquals(get_class($expectedEvents), $events[0]->typeName());
+        $this->assertStringContainsString($foundPayer->id()->toString(), $events[0]->body());
+        $this->assertStringContainsString($foundPayee->id()->toString(), $events[0]->body());
+        $this->assertStringContainsString((string) $valueToSend, $events[0]->body());
     }
 
     /**
@@ -74,6 +90,12 @@ class SendMoneyHandlerTest extends TestCase
         $valueToSend = 50;
         $expectedPayerBalance = 50;
         $expectedPayeeBalance = 150;
+        $expectedEvents = TransactionCreated::create(
+            $payerId->toString(),
+            $payeeId->toString(),
+            $valueToSend,
+            new DateTimeImmutable()
+        );
 
         $repository = new InMemoryUserRepository([
             $this->createDefaultUser($payerId),
@@ -99,6 +121,13 @@ class SendMoneyHandlerTest extends TestCase
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
+
+        $events = $eventStore->allStoredEvents();
+        $this->assertCount(1, $events);
+        $this->assertEquals(get_class($expectedEvents), $events[0]->typeName());
+        $this->assertStringContainsString($foundPayer->id()->toString(), $events[0]->body());
+        $this->assertStringContainsString($foundPayee->id()->toString(), $events[0]->body());
+        $this->assertStringContainsString((string) $valueToSend, $events[0]->body());
     }
 
     /**
