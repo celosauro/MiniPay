@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Domain;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
+use MiniPay\Core\User\Domain\Event\TransactionReceived;
+use MiniPay\Core\User\Domain\Event\TransactionWithdrew;
 use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
@@ -96,11 +99,23 @@ abstract class User
     public function withdraw(float $value): void
     {
         $this->wallet->withdraw($value);
+
+        $this->domainEvents[] = TransactionWithdrew::create(
+            $this->id()->toString(),
+            $value,
+            new DateTimeImmutable()
+        );
     }
 
     public function receive(float $value): void
     {
         $this->wallet->receive($value);
+
+        $this->domainEvents[] = TransactionReceived::create(
+            $this->id()->toString(),
+            $value,
+            new DateTimeImmutable()
+        );
     }
 
     /**
