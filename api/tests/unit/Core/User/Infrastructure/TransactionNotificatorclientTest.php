@@ -9,8 +9,8 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-use MiniPay\Core\User\Domain\Exception\TransactionNotificatorBadRequest;
-use MiniPay\Core\User\Infrastructure\TransactionNotificatorclient;
+use MiniPay\Core\User\Domain\Exception\TransactionReceivedNotificatorBadRequest;
+use MiniPay\Core\User\Infrastructure\TransactionReceivedNotificatorclient;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +35,7 @@ final class TransactionNotificatorclientTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $handlerStack->push($history);
         $clientHttp = new Client(['handler' => $handlerStack]);
-        $transactionNotificatorClient = new TransactionNotificatorclient($clientHttp);
+        $transactionNotificatorClient = new TransactionReceivedNotificatorclient($clientHttp);
 
         $userId = Id::fromString('user-id')->toString();
         $amount = 100;
@@ -50,7 +50,7 @@ final class TransactionNotificatorclientTest extends TestCase
      */
     public function shoudDoRequestToSendTransactionNotificationFailed(): void
     {
-        $this->expectException(TransactionNotificatorBadRequest::class);
+        $this->expectException(TransactionReceivedNotificatorBadRequest::class);
         $this->expectExceptionMessage(
             'Fail to send transaction notification to userId user-id with amount 100.'
         );
@@ -67,7 +67,7 @@ final class TransactionNotificatorclientTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $handlerStack->push($history);
         $clientHttp = new Client(['handler' => $handlerStack]);
-        $transactionNotificatorClient = new TransactionNotificatorclient($clientHttp);
+        $transactionNotificatorClient = new TransactionReceivedNotificatorclient($clientHttp);
 
         $userId = Id::fromString('user-id')->toString();
         $amount = 100;

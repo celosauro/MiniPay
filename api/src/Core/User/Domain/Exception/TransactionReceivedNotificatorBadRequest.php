@@ -11,7 +11,7 @@ use Lcobucci\ErrorHandling\Problem\Titled;
 
 use function sprintf;
 
-final class TransactionNotificatorBadRequest extends Exception implements InvalidRequest, Titled, Detailed
+final class TransactionReceivedNotificatorBadRequest extends Exception implements InvalidRequest, Titled, Detailed
 {
     private string $userId;
     private float $amount;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Domain\Event;
 
-use MiniPay\Core\User\Application\TransactionNotificator;
+use MiniPay\Core\User\Application\SendTransactionReceivedNotification;
 use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventSubscriber;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -32,7 +32,7 @@ class TransactionReceivedSubscriber implements DomainEventSubscriber
             return;
         }
 
-        $command = new TransactionNotificator($domainEvent->userId, $domainEvent->amount);
+        $command = new SendTransactionReceivedNotification($domainEvent->userId, $domainEvent->amount);
 
         $this->bus->dispatch($command);
     }

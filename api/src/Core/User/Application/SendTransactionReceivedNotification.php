@@ -7,7 +7,7 @@ namespace MiniPay\Core\User\Application;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @psalm-immutable */
-final class TransactionNotificator
+final class SendTransactionReceivedNotification
 {
     /** @Assert\NotBlank() */
     public string $userId;

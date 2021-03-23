@@ -6,11 +6,11 @@ namespace MiniPay\Core\User\Infrastructure;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use MiniPay\Core\User\Domain\Exception\TransactionNotificatorBadRequest;
-use MiniPay\Core\User\Domain\Notificator;
+use MiniPay\Core\User\Domain\Exception\TransactionReceivedNotificatorBadRequest;
+use MiniPay\Core\User\Domain\TransactionReceivedNotificator;
 use Throwable;
 
-class TransactionNotificatorclient implements Notificator
+class TransactionReceivedNotificatorclient implements TransactionReceivedNotificator
 {
     private const CLIENT_URL = 'https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04';
 
@@ -31,7 +31,7 @@ class TransactionNotificatorclient implements Notificator
         try {
             $this->httpClient->send($request);
         } catch (Throwable $t) {
-            throw TransactionNotificatorBadRequest::forTransactionReceveid($userId, $amount);
+            throw TransactionReceivedNotificatorBadRequest::forTransactionReceveid($userId, $amount);
         }
     }
 }
