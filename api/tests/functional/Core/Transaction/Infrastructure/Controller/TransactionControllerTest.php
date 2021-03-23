@@ -10,9 +10,6 @@ use function json_encode;
 
 class TransactionControllerTest extends DoctrineTestCase
 {
-    /**
-     * @test
-     */
     public function shoudSendMoney(): void
     {
         $this->createAnDefaultUser('55094850008', 'foo@bar.com');
@@ -32,8 +29,6 @@ class TransactionControllerTest extends DoctrineTestCase
             [],
             $content
         );
-
-        dd($client->getResponse()->getContent());
 
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
     }
