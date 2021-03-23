@@ -10,6 +10,10 @@ core_user_controllers:
   resource: '../../src/Core/User/Infrastructure/Controller'
   type: annotation
 
+core_transaction_controllers:
+  resource: '../../src/Core/Transaction/Infrastructure/Controller'
+  type: annotation
+
 #your_package_controllers:
 #  resource: '../../src/YourPackage/Infrastructure/Controller'
 #  type: annotation

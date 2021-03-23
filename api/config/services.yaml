@@ -36,9 +36,12 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    controllers:
-        namespace: MiniPay\Core\User\Infrastructure\Controller\
+    MiniPay\Core\User\Infrastructure\Controller\:
         resource: '../src/Core/User/Infrastructure/Controller'
+        tags: ['controller.service_arguments']
+
+    MiniPay\Core\Transaction\Infrastructure\Controller\:
+        resource: '../src/Core/Transaction/Infrastructure/Controller'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
