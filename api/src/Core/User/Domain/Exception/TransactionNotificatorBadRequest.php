@@ -13,21 +13,18 @@ use function sprintf;
 
 final class TransactionNotificatorBadRequest extends Exception implements InvalidRequest, Titled, Detailed
 {
-    private string $payerId;
-    private string $payeeId;
-    private float $value;
+    private string $userId;
+    private float $amount;
 
-    public static function forTransactionReceveid(string $payerId, string $payeeId, float $value): self
+    public static function forTransactionReceveid(string $userId, float $amount): self
     {
         $exception = new self(sprintf(
-            'Fail to send transaction notification to payeeId %s from payerId %s with value %d.',
-            $payeeId,
-            $payerId,
-            $value
+            'Fail to send transaction notification to userId %s with amount %d.',
+            $userId,
+            $amount
         ));
-        $exception->payerId = $payerId;
-        $exception->payeeId = $payeeId;
-        $exception->value = $value;
+        $exception->userId = $userId;
+        $exception->amount = $amount;
 
         return $exception;
     }
@@ -43,9 +40,8 @@ final class TransactionNotificatorBadRequest extends Exception implements Invali
     public function getExtraDetails(): array
     {
         return [
-            'payerId' => $this->payerId,
-            'payeeId' => $this->payeeId,
-            'value' => $this->value,
+            'userId' => $this->userId,
+            'amount' => $this->amount,
         ];
     }
 }

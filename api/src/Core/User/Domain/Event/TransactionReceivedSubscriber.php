@@ -9,9 +9,7 @@ use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventSubscriber;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-use function assert;
-
-class TransactionCreatedSubscriber implements DomainEventSubscriber
+class TransactionReceivedSubscriber implements DomainEventSubscriber
 {
     private MessageBusInterface $bus;
 
@@ -25,14 +23,16 @@ class TransactionCreatedSubscriber implements DomainEventSubscriber
      */
     public function subscribedEvents(): array
     {
-        return [TransactionCreated::class];
+        return [TransactionReceived::class];
     }
 
     public function handle(DomainEvent $domainEvent): void
     {
-        assert($domainEvent instanceof TransactionCreated);
+        if (! ($domainEvent instanceof TransactionReceived)) {
+            return;
+        }
 
-        $command = new TransactionNotificator($domainEvent->payerId, $domainEvent->payeeId, $domainEvent->value);
+        $command = new TransactionNotificator($domainEvent->userId, $domainEvent->amount);
 
         $this->bus->dispatch($command);
     }

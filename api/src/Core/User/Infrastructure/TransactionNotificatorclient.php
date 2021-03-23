@@ -21,7 +21,7 @@ class TransactionNotificatorclient implements Notificator
         $this->httpClient = $httpClient;
     }
 
-    public function send(string $payerId, string $payeeId, float $value): void
+    public function send(string $userId, float $amount): void
     {
         $request = new Request(
             'GET',
@@ -31,7 +31,7 @@ class TransactionNotificatorclient implements Notificator
         try {
             $this->httpClient->send($request);
         } catch (Throwable $t) {
-            throw TransactionNotificatorBadRequest::forTransactionReceveid($payerId, $payeeId, $value);
+            throw TransactionNotificatorBadRequest::forTransactionReceveid($userId, $amount);
         }
     }
 }

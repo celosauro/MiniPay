@@ -37,11 +37,10 @@ final class TransactionNotificatorclientTest extends TestCase
         $clientHttp = new Client(['handler' => $handlerStack]);
         $transactionNotificatorClient = new TransactionNotificatorclient($clientHttp);
 
-        $payerId = Id::fromString('payer-id')->toString();
-        $payeeId = Id::fromString('payee-id')->toString();
-        $value = 100;
+        $userId = Id::fromString('user-id')->toString();
+        $amount = 100;
 
-        $transactionNotificatorClient->send($payerId, $payeeId, $value);
+        $transactionNotificatorClient->send($userId, $amount);
 
         $this->assertEquals('{"message":"Enviado"}', $container[0]['response']->getBody()->getContents());
     }
@@ -53,7 +52,7 @@ final class TransactionNotificatorclientTest extends TestCase
     {
         $this->expectException(TransactionNotificatorBadRequest::class);
         $this->expectExceptionMessage(
-            'Fail to send transaction notification to payeeId payee-id from payerId payer-id with value 100.'
+            'Fail to send transaction notification to userId user-id with amount 100.'
         );
 
         $container = [];
@@ -70,10 +69,9 @@ final class TransactionNotificatorclientTest extends TestCase
         $clientHttp = new Client(['handler' => $handlerStack]);
         $transactionNotificatorClient = new TransactionNotificatorclient($clientHttp);
 
-        $payerId = Id::fromString('payer-id')->toString();
-        $payeeId = Id::fromString('payee-id')->toString();
-        $value = 100;
+        $userId = Id::fromString('user-id')->toString();
+        $amount = 100;
 
-        $transactionNotificatorClient->send($payerId, $payeeId, $value);
+        $transactionNotificatorClient->send($userId, $amount);
     }
 }

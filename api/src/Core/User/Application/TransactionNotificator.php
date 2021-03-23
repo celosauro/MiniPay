@@ -10,24 +10,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class TransactionNotificator
 {
     /** @Assert\NotBlank() */
-    public string $payerId;
-
-    /** @Assert\NotBlank() */
-    public string $payeeId;
+    public string $userId;
 
     /**
      * @Assert\NotBlank()
      * @Assert\Type("float")
      */
-    public float $value;
+    public float $amount;
 
     public function __construct(
-        string $payerId,
-        string $payeeId,
-        float $value
+        string $userId,
+        float $amount
     ) {
-        $this->payerId = $payerId;
-        $this->payeeId = $payeeId;
-        $this->value = $value;
+        $this->userId = $userId;
+        $this->amount = $amount;
     }
 }

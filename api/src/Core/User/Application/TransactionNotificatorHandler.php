@@ -18,6 +18,6 @@ class TransactionNotificatorHandler implements MessageHandlerInterface
 
     public function __invoke(TransactionNotificator $command): void
     {
-        $this->notificator->send($command->payerId, $command->payeeId, $command->value);
+        $this->notificator->send($command->userId, $command->amount);
     }
 }

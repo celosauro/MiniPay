@@ -6,5 +6,5 @@ namespace MiniPay\Core\User\Domain;
 
 interface Notificator
 {
-    public function send(string $payerId, string $payeeId, float $value): void;
+    public function send(string $userId, float $amount): void;
 }

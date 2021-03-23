@@ -66,7 +66,7 @@ services:
     MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher:
         class: 'MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher'
         arguments:
-            - ['@domain_event.persist_domain_event_subscriber', '@transaction_created.domain_event_subscriber']
+            - ['@domain_event.persist_domain_event_subscriber', '@transaction_received.domain_event_subscriber']
 
     # Repository
     MiniPay\Core\User\Domain\UserRepository:
@@ -79,5 +79,5 @@ services:
         class: '%transaction.notificator%'
 
     # Subscribers
-    transaction_created.domain_event_subscriber:
-        class: MiniPay\Core\User\Domain\Event\TransactionCreatedSubscriber
+    transaction_received.domain_event_subscriber:
+        class: MiniPay\Core\User\Domain\Event\TransactionReceivedSubscriber

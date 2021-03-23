@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\User\Application;
 
-use DateTimeImmutable;
-use MiniPay\Core\User\Domain\Event\TransactionCreated;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
 use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
@@ -13,31 +11,21 @@ use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\TransactionAuth;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
-use MiniPay\Framework\DomainEvent\Domain\EventStore;
 use MiniPay\Framework\Id\Domain\Id;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 use function assert;
 
 class SendMoneyHandler implements MessageHandlerInterface
 {
-    private MessageBusInterface $eventBus;
-
     private UserRepository $repository;
-
-    private EventStore $eventStore;
 
     private TransactionAuth $transactionAuthClient;
 
     public function __construct(
-        MessageBusInterface $eventBus,
-        EventStore $eventStore,
         UserRepository $repository,
         TransactionAuth $transactionAuthClient
     ) {
-        $this->eventBus = $eventBus;
-        $this->eventStore = $eventStore;
         $this->repository = $repository;
         $this->transactionAuthClient = $transactionAuthClient;
     }
@@ -61,12 +49,6 @@ class SendMoneyHandler implements MessageHandlerInterface
 
         $this->repository->save($payer);
         $this->repository->save($payee);
-
-        $this->dispatchTransactionCreatedEvent(
-            $command->payer,
-            $command->payee,
-            $command->value
-        );
     }
 
     private function throwExceptionIfUserNotFound(?User $payer, string $userId): void
@@ -88,19 +70,5 @@ class SendMoneyHandler implements MessageHandlerInterface
         if ($this->transactionAuthClient->auth() === false) {
             throw TransactionUnauthorized::withData($payerId, $payeeId, $value);
         }
-    }
-
-    private function dispatchTransactionCreatedEvent(string $payerId, string $payeeId, float $value): void
-    {
-        $event = TransactionCreated::create(
-            $payerId,
-            $payeeId,
-            $value,
-            new DateTimeImmutable()
-        );
-
-        $this->eventStore->append($event);
-
-        $this->eventBus->dispatch($event);
     }
 }

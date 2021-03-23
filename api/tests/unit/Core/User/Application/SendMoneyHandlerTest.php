@@ -4,31 +4,26 @@ declare(strict_types=1);
 
 namespace MiniPay\Tests\Core\User\Application;
 
-use DateTimeImmutable;
 use MiniPay\Core\User\Application\SendMoney;
 use MiniPay\Core\User\Application\SendMoneyHandler;
 use MiniPay\Core\User\Domain\DefaultUser;
-use MiniPay\Core\User\Domain\Event\TransactionCreated;
+use MiniPay\Core\User\Domain\Event\TransactionReceivedSubscriber;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
 use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\Wallet;
-use MiniPay\Core\User\Infrastructure\Persistence\InMemoryUserRepository;
-use MiniPay\Framework\DomainEvent\Infrastructure\InMemoryEventStore;
+use MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository;
+use MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher;
 use MiniPay\Framework\Id\Domain\Id;
 use MiniPay\Tests\Core\User\Infrastructure\FakeTransactionAuthClient;
-use PHPUnit\Framework\TestCase;
+use MiniPay\Tests\Framework\DoctrineTestCase;
 use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 use function assert;
-use function get_class;
 
-class SendMoneyHandlerTest extends TestCase
+class SendMoneyHandlerTest extends DoctrineTestCase
 {
     /**
      * @test
@@ -40,21 +35,19 @@ class SendMoneyHandlerTest extends TestCase
         $valueToSend = 50;
         $expectedPayerBalance = 50;
         $expectedPayeeBalance = 150;
-        $expectedEvents = TransactionCreated::create(
-            $payerId->toString(),
-            $payeeId->toString(),
-            $valueToSend,
-            new DateTimeImmutable()
-        );
 
-        $repository = new InMemoryUserRepository([
-            $this->createDefaultUser($payerId),
-            $this->createDefaultUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createDefaultUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(true);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -71,13 +64,6 @@ class SendMoneyHandlerTest extends TestCase
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
-
-        $events = $eventStore->allStoredEvents();
-        $this->assertCount(1, $events);
-        $this->assertEquals(get_class($expectedEvents), $events[0]->typeName());
-        $this->assertStringContainsString($foundPayer->id()->toString(), $events[0]->body());
-        $this->assertStringContainsString($foundPayee->id()->toString(), $events[0]->body());
-        $this->assertStringContainsString((string) $valueToSend, $events[0]->body());
     }
 
     /**
@@ -90,21 +76,19 @@ class SendMoneyHandlerTest extends TestCase
         $valueToSend = 50;
         $expectedPayerBalance = 50;
         $expectedPayeeBalance = 150;
-        $expectedEvents = TransactionCreated::create(
-            $payerId->toString(),
-            $payeeId->toString(),
-            $valueToSend,
-            new DateTimeImmutable()
-        );
 
-        $repository = new InMemoryUserRepository([
-            $this->createDefaultUser($payerId),
-            $this->createStorekeeperUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createDefaultUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(true);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -121,13 +105,6 @@ class SendMoneyHandlerTest extends TestCase
 
         $this->assertEquals($expectedPayerBalance, $foundPayer->balance());
         $this->assertEquals($expectedPayeeBalance, $foundPayee->balance());
-
-        $events = $eventStore->allStoredEvents();
-        $this->assertCount(1, $events);
-        $this->assertEquals(get_class($expectedEvents), $events[0]->typeName());
-        $this->assertStringContainsString($foundPayer->id()->toString(), $events[0]->body());
-        $this->assertStringContainsString($foundPayee->id()->toString(), $events[0]->body());
-        $this->assertStringContainsString((string) $valueToSend, $events[0]->body());
     }
 
     /**
@@ -141,14 +118,18 @@ class SendMoneyHandlerTest extends TestCase
         $payeeId = Id::fromString('payee-id');
         $valueToSend = 50;
 
-        $repository = new InMemoryUserRepository([
-            $this->createStorekeeperUser($payerId),
-            $this->createDefaultUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createStorekeeperUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(true);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -171,14 +152,18 @@ class SendMoneyHandlerTest extends TestCase
         $payeeId = Id::fromString('payee-id');
         $valueToSend = 50;
 
-        $repository = new InMemoryUserRepository([
-            $this->createStorekeeperUser($payerId),
-            $this->createDefaultUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createStorekeeperUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(true);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             Id::fromString('non-existent-payer-user')->toString(),
@@ -201,14 +186,18 @@ class SendMoneyHandlerTest extends TestCase
         $payeeId = Id::fromString('payee-id');
         $valueToSend = 50;
 
-        $repository = new InMemoryUserRepository([
-            $this->createDefaultUser($payerId),
-            $this->createDefaultUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createDefaultUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(true);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -233,14 +222,18 @@ class SendMoneyHandlerTest extends TestCase
         $payeeId = Id::fromString('payee-id');
         $valueToSend = 50;
 
-        $repository = new InMemoryUserRepository([
-            $this->createDefaultUser($payerId),
-            $this->createDefaultUser($payeeId),
-        ]);
         $eventBus = new MessageBus();
-        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $bus = new MessageBus();
+        $publisher = new DomainEventPublisher([new TransactionReceivedSubscriber($eventBus)], $bus);
+        $repository = new DoctrineUserRepository($this->entityManager, $publisher);
+
+        $repository->save($this->createDefaultUser($payerId, '88498957044', 'foo@bar.com'));
+        $repository->save($this->createDefaultUser($payeeId, '88498957043', 'foobar@bar.com'));
+
+        $this->entityManager->flush();
+
         $transactionAuthClient = new FakeTransactionAuthClient(false);
-        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+        $handler = new SendMoneyHandler($repository, $transactionAuthClient);
 
         $command = new SendMoney(
             $payerId->toString(),
@@ -254,13 +247,13 @@ class SendMoneyHandlerTest extends TestCase
     /**
      * @psalm-param Id<User> $id
      */
-    private function createDefaultUser(Id $id): DefaultUser
+    private function createDefaultUser(Id $id, string $cpfOrCnpj, string $email): DefaultUser
     {
         return DefaultUser::create(
             $id,
             'Foo Bar',
-            '88498957044',
-            'foo@bar.com',
+            $cpfOrCnpj,
+            $email,
             new Wallet(100)
         );
     }
@@ -268,13 +261,13 @@ class SendMoneyHandlerTest extends TestCase
     /**
      * @psalm-param Id<User> $id
      */
-    private function createStorekeeperUser(Id $id): StoreKeeperUser
+    private function createStorekeeperUser(Id $id, string $cpfOrCnpj, string $email): StoreKeeperUser
     {
         return StoreKeeperUser::create(
             $id,
             'Foo Bar',
-            '88498957044',
-            'foo@bar.com',
+            $cpfOrCnpj,
+            $email,
             new Wallet(100)
         );
     }

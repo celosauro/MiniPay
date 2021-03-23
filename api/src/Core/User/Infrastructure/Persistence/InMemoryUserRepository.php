@@ -22,9 +22,9 @@ class InMemoryUserRepository implements UserRepository
         $this->items = $items;
     }
 
-    public function save(User $envelope): void
+    public function save(User $user): void
     {
-        $this->items[$envelope->id()->toString()] = $envelope;
+        $this->items[$user->id()->toString()] = $user;
     }
 
     /**
@@ -32,40 +32,40 @@ class InMemoryUserRepository implements UserRepository
      */
     public function findOneByIdOrNull(Id $id): ?User
     {
-        $envelope = array_filter($this->items, static function ($item) use ($id) {
+        $user = array_filter($this->items, static function ($item) use ($id) {
             return $item->id()->isEqualTo($id);
         });
 
-        if (empty($envelope)) {
+        if (empty($user)) {
             return null;
         }
 
-        return reset($envelope);
+        return reset($user);
     }
 
     public function findOneByCpfOrCnpjOrNull(string $cpfOrCnpj): ?User
     {
-        $envelope = array_filter($this->items, static function ($item) use ($cpfOrCnpj) {
+        $user = array_filter($this->items, static function ($item) use ($cpfOrCnpj) {
             return $item->cpfOrCnpj() === $cpfOrCnpj;
         });
 
-        if (empty($envelope)) {
+        if (empty($user)) {
             return null;
         }
 
-        return reset($envelope);
+        return reset($user);
     }
 
     public function findOneByEmailOrNull(string $email): ?User
     {
-        $envelope = array_filter($this->items, static function ($item) use ($email) {
+        $user = array_filter($this->items, static function ($item) use ($email) {
             return $item->email() === $email;
         });
 
-        if (empty($envelope)) {
+        if (empty($user)) {
             return null;
         }
 
-        return reset($envelope);
+        return reset($user);
     }
 }
