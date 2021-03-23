@@ -9,6 +9,7 @@ parameters:
     event.store: MiniPay\Framework\DomainEvent\Infrastructure\DoctrineEventStore
     user.repository: MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository
     transaction.auth.client: MiniPay\Core\User\Infrastructure\TransactionAuthClient
+    transaction.notificator: MiniPay\Core\User\Infrastructure\TransactionNotificatorclient
 
 services:
     # default configuration for services in *this* file
@@ -65,7 +66,7 @@ services:
     MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher:
         class: 'MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher'
         arguments:
-            - ['@domain_event.persist_domain_event_subscriber']
+            - ['@domain_event.persist_domain_event_subscriber', '@transaction_created.domain_event_subscriber']
 
     # Repository
     MiniPay\Core\User\Domain\UserRepository:
@@ -73,3 +74,10 @@ services:
 
     MiniPay\Core\User\Domain\TransactionAuth:
         class: '%transaction.auth.client%'
+
+    MiniPay\Core\User\Domain\Notificator:
+        class: '%transaction.notificator%'
+
+    # Subscribers
+    transaction_created.domain_event_subscriber:
+        class: MiniPay\Core\User\Domain\Event\TransactionCreatedSubscriber
