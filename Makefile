@@ -36,8 +36,7 @@ up: api/vendor
 ## Reinicia a aplicação.
 reset:
 	@echo 💾 Criando e populando banco de dados local.
-	docker-compose run php bin/wait-for-mysql.sh
-#console doctrine:migrations:migrate --no-interaction
+	docker-compose run php bin/wait-for-mysql.sh console doctrine:migrations:migrate --no-interaction
 
 ## Desliga a aplicação.
 down:

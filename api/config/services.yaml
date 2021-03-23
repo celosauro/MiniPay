@@ -30,7 +30,7 @@ services:
     MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener:
         class: MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener
         arguments:
-            $mode: '%env(EXCEPTION_LISTENER_MODE)%'
+            $debug: '%env(ATTACH_DEBUG_INFORMATION_INTO_HTTP_RESPONSE)%'
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
     ## Fim - configs do mensageiro framework
@@ -81,3 +81,6 @@ services:
     # Subscribers
     transaction_received.domain_event_subscriber:
         class: MiniPay\Core\User\Domain\Event\TransactionReceivedSubscriber
+
+    MiniPay\Framework\Serializer\Symfony\ArrayNormalizer:
+        tags: ['serializer.normalizer']

@@ -12,10 +12,16 @@ final class SendMoney
 {
     public ?string $id;
 
-    /** @Assert\NotBlank() */
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Type("string")
+     */
     public string $payer;
 
-    /** @Assert\NotBlank() */
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Type("string")
+     */
     public string $payee;
 
     /**
