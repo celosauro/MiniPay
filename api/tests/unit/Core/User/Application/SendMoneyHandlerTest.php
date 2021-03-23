@@ -8,6 +8,7 @@ use MiniPay\Core\User\Application\SendMoney;
 use MiniPay\Core\User\Application\SendMoneyHandler;
 use MiniPay\Core\User\Domain\DefaultUser;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
+use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
 use MiniPay\Core\User\Domain\User;
@@ -183,6 +184,38 @@ class SendMoneyHandlerTest extends TestCase
         $command = new SendMoney(
             $payerId->toString(),
             Id::fromString('non-existent-payee-user')->toString(),
+            $valueToSend
+        );
+
+        $handler($command);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldThrowExceptionWhenTransactionIsUnauthorized(): void
+    {
+        $this->expectException(TransactionUnauthorized::class);
+        $this->expectExceptionMessage(
+            'Transaction Unauthorized from payerId payer-id to payeeId payee-id with value 50.'
+        );
+
+        $payerId = Id::fromString('payer-id');
+        $payeeId = Id::fromString('payee-id');
+        $valueToSend = 50;
+
+        $repository = new InMemoryUserRepository([
+            $this->createDefaultUser($payerId),
+            $this->createDefaultUser($payeeId),
+        ]);
+        $eventBus = new MessageBus();
+        $eventStore = new InMemoryEventStore(new Serializer([new ObjectNormalizer()], [new JsonEncoder()]));
+        $transactionAuthClient = new FakeTransactionAuthClient(false);
+        $handler = new SendMoneyHandler($eventBus, $eventStore, $repository, $transactionAuthClient);
+
+        $command = new SendMoney(
+            $payerId->toString(),
+            $payeeId->toString(),
             $valueToSend
         );
 
