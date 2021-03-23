@@ -123,6 +123,24 @@ class DoctrineUserRepositoryTest extends DoctrineTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldReturnNullWhenIdNotExists(): void
+    {
+        $id = Id::generate();
+        $user = $this->createDefaultUser($id);
+
+        $this->assertFalse($this->entityManager->contains($user));
+
+        $this->repository->save($user);
+        $this->entityManager->flush();
+
+        $foundUser = $this->repository->findOneByIdOrNull(Id::generate());
+
+        $this->assertNull($foundUser);
+    }
+
+    /**
      * @psalm-param Id<User> $id
      */
     private function createDefaultUser(Id $id): DefaultUser
