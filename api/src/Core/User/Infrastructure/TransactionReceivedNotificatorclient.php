@@ -10,6 +10,8 @@ use MiniPay\Core\User\Domain\Exception\TransactionReceivedNotificatorBadRequest;
 use MiniPay\Core\User\Domain\TransactionReceivedNotificator;
 use Throwable;
 
+use function json_encode;
+
 class TransactionReceivedNotificatorclient implements TransactionReceivedNotificator
 {
     private const CLIENT_URL = 'https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04';
@@ -24,8 +26,13 @@ class TransactionReceivedNotificatorclient implements TransactionReceivedNotific
     public function send(string $userId, float $amount): void
     {
         $request = new Request(
-            'GET',
-            self::CLIENT_URL
+            'POST',
+            self::CLIENT_URL,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode([
+                'userId' => $userId,
+                'amount' => $amount,
+            ])
         );
 
         try {
