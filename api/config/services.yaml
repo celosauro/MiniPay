@@ -30,7 +30,7 @@ services:
     MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener:
         class: MiniPay\Framework\Exception\Infrastructure\SymfonyExceptionListener
         arguments:
-            $mode: '%env(EXCEPTION_LISTENER_MODE)%'
+            $debug: '%env(ATTACH_DEBUG_INFORMATION_INTO_HTTP_RESPONSE)%'
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
     ## Fim - configs do mensageiro framework
