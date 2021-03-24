@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Tests\Core\User\Infrastructure;
+namespace MiniPay\Tests\Core\Transaction\Infrastructure;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use MiniPay\Core\Transaction\Infrastructure\TransactionReceivedNotificatorclient;
 use MiniPay\Core\User\Domain\Exception\TransactionReceivedNotificatorBadRequest;
-use MiniPay\Core\User\Infrastructure\TransactionReceivedNotificatorclient;
 use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 

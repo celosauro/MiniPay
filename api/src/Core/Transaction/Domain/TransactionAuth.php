@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Domain;
+namespace MiniPay\Core\Transaction\Domain;
 
 interface TransactionAuth
 {

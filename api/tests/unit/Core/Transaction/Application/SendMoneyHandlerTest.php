@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Tests\Core\User\Application;
+namespace MiniPay\Tests\Core\Transaction\Application;
 
-use MiniPay\Core\User\Application\SendMoney;
-use MiniPay\Core\User\Application\SendMoneyHandler;
+use MiniPay\Core\Transaction\Application\SendMoney;
+use MiniPay\Core\Transaction\Application\SendMoneyHandler;
 use MiniPay\Core\User\Domain\DefaultUser;
 use MiniPay\Core\User\Domain\Event\TransactionReceivedSubscriber;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
@@ -17,7 +17,7 @@ use MiniPay\Core\User\Domain\Wallet;
 use MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository;
 use MiniPay\Framework\DomainEvent\Domain\DomainEventPublisher;
 use MiniPay\Framework\Id\Domain\Id;
-use MiniPay\Tests\Core\User\Infrastructure\FakeTransactionAuthClient;
+use MiniPay\Tests\Core\Transaction\Infrastructure\FakeTransactionAuthClient;
 use MiniPay\Tests\Framework\DoctrineTestCase;
 use Symfony\Component\Messenger\MessageBus;
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Tests\Core\User\Infrastructure;
+namespace MiniPay\Tests\Core\Transaction\Infrastructure;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-use MiniPay\Core\User\Infrastructure\TransactionAuthClient;
+use MiniPay\Core\Transaction\Infrastructure\TransactionAuthClient;
 use PHPUnit\Framework\TestCase;
 
 use function json_encode;

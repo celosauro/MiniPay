@@ -32,4 +32,4 @@ framework:
         routing:
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
-            MiniPay\Core\User\Application\Async\SendTransactionReceivedNotification: async
+            MiniPay\Core\Transaction\Application\Async\SendTransactionReceivedNotification: async

@@ -8,8 +8,8 @@ parameters:
     env(EXCEPTION_LISTENER_MODE): 'production'
     event.store: MiniPay\Framework\DomainEvent\Infrastructure\DoctrineEventStore
     user.repository: MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository
-    transaction.auth.client: MiniPay\Core\User\Infrastructure\TransactionAuthClient
-    transaction.notificator: MiniPay\Core\User\Infrastructure\TransactionNotificatorclient
+    transaction.auth.client: MiniPay\Core\Tranction\Infrastructure\TransactionAuthClient
+    transaction.notificator: MiniPay\Core\Tranction\Infrastructure\TransactionNotificatorclient
 
 services:
     # default configuration for services in *this* file
@@ -72,7 +72,7 @@ services:
     MiniPay\Core\User\Domain\UserRepository:
         class: '%user.repository%'
 
-    MiniPay\Core\User\Domain\TransactionAuth:
+    MiniPay\Core\Transaction\Domain\TransactionAuth:
         class: '%transaction.auth.client%'
 
     MiniPay\Core\User\Domain\Notificator:

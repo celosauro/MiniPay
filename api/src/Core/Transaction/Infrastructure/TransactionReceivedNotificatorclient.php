@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Infrastructure;
+namespace MiniPay\Core\Transaction\Infrastructure;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use MiniPay\Core\Transaction\Domain\TransactionReceivedNotificator;
 use MiniPay\Core\User\Domain\Exception\TransactionReceivedNotificatorBadRequest;
-use MiniPay\Core\User\Domain\TransactionReceivedNotificator;
 use Throwable;
 
 use function json_encode;

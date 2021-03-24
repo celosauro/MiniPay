@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MiniPay\Core\Transaction\Infrastructure\Controller;
 
-use MiniPay\Core\User\Application\SendMoney;
+use MiniPay\Core\Transaction\Application\SendMoney;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

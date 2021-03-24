@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Tests\Core\User\Infrastructure;
+namespace MiniPay\Tests\Core\Transaction\Infrastructure;
 
-use MiniPay\Core\User\Domain\TransactionAuth;
+use MiniPay\Core\Transaction\Domain\TransactionAuth;
 
 class FakeTransactionAuthClient implements TransactionAuth
 {

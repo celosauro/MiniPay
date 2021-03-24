@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Application;
+namespace MiniPay\Core\Transaction\Application;
 
+use MiniPay\Core\Transaction\Domain\TransactionAuth;
 use MiniPay\Core\User\Domain\Exception\CannotSendMoney;
 use MiniPay\Core\User\Domain\Exception\TransactionUnauthorized;
 use MiniPay\Core\User\Domain\Exception\UserNotFound;
 use MiniPay\Core\User\Domain\StoreKeeperUser;
-use MiniPay\Core\User\Domain\TransactionAuth;
 use MiniPay\Core\User\Domain\User;
 use MiniPay\Core\User\Domain\UserRepository;
 use MiniPay\Framework\Id\Domain\Id;

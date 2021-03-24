@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Application\Async;
+namespace MiniPay\Core\Transaction\Application\Async;
 
-use MiniPay\Core\User\Domain\TransactionReceivedNotificator;
+use MiniPay\Core\Transaction\Domain\TransactionReceivedNotificator;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class SendTransactionReceivedNotificationHandler implements MessageHandlerInterface

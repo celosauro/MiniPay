@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Infrastructure;
+namespace MiniPay\Core\Transaction\Infrastructure;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use MiniPay\Core\User\Domain\TransactionAuth;
+use MiniPay\Core\Transaction\Domain\TransactionAuth;
 use Psr\Http\Message\ResponseInterface;
 
 use function json_decode;

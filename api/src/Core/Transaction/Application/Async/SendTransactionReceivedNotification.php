@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Application\Async;
+namespace MiniPay\Core\Transaction\Application\Async;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MiniPay\Core\User\Application;
+namespace MiniPay\Core\Transaction\Application;
 
 use MiniPay\Framework\Id\Domain\Id;
 use Symfony\Component\Validator\Constraints as Assert;
