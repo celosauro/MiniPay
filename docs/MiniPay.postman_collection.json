@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "c794b97a-ca41-4134-81d2-e0eb2f36a9fa",
+		"name": "MiniPay",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cpf_cnpj\": \"55094850008\",\n    \"full_name\": \"Foo Bar\",\n    \"email\": \"email@email.com\",\n    \"wallet_amount\": 99,\n    \"type\": \"default\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User-Secret",
+						"value": "JGFyZ29uMmkkdj0xOSRtPTY1NTM2LHQ9NCxwPTEkUXpsamJ6UTBMbU5JVkVrMldVVnBlUSRWeWU3aVM5LzhsVDcyZTRFdmdvNWx0Yk5ma1BQeDJZNFRGU0dtU1hMdG1R",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"payer\": \"c6186c6b-46ce-43e8-8595-5d5d848a8a12\",\n    \"payee\": \"faef028c-f6f4-47dc-8035-e28139cfcffe\",\n    \"value\": 1.0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/transaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
