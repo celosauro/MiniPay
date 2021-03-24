@@ -42,7 +42,7 @@ class CreateUserHandlerTest extends TestCase
         $userId = $command->id;
         assert(is_string($userId));
 
-        $handler($command);
+        $secret = $handler($command);
 
         $createdUser = $repository->findOneByIdOrNull(Id::fromString($command->id ?? ''));
         assert($createdUser instanceof User);
@@ -52,6 +52,7 @@ class CreateUserHandlerTest extends TestCase
         $this->assertEquals($command->fullName, $createdUser->fullName());
         $this->assertEquals($command->email, $createdUser->email());
         $this->assertEquals($command->walletAmount, $createdUser->balance());
+        $this->assertTrue($createdUser->checkSecret($secret));
     }
 
     /**

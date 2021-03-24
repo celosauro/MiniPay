@@ -34,6 +34,7 @@ class UserControllerTest extends DoctrineTestCase
         );
 
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
+        $this->assertStringContainsString('secret', (string) $client->getResponse()->getContent());
     }
 
     /**

@@ -27,7 +27,7 @@ class CreateUserHandler implements MessageHandlerInterface
         $this->repository = $repository;
     }
 
-    public function __invoke(CreateUser $command): void
+    public function __invoke(CreateUser $command): string
     {
         $this->throwExceptionIfUserTypeIsInvalid($command->type);
 
@@ -45,7 +45,11 @@ class CreateUserHandler implements MessageHandlerInterface
 
         assert($user instanceof User);
 
+        $secret = $user->createSecret();
+
         $this->repository->save($user);
+
+        return $secret;
     }
 
     private function throwExceptionIfUserTypeIsInvalid(string $type): void
