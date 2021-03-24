@@ -14,15 +14,9 @@ services:
   php:
     build:
       context: ./api
-      dockerfile: ./Dockerfile
-      target: dev
+      dockerfile: docker/php/Dockerfile
       args:
         - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST:-172.17.0.1} # No Mac, substituir por: host.docker.internal
-        - DB_SERVER=mysql
-        - DB_PORT=3306
-        - DB_NAME=app
-        - DB_USER=root
-        - DB_PASSWORD=root
     ports:
       - 9000
     volumes:
@@ -31,6 +25,11 @@ services:
       - ./api/.env
     environment:
       - PHP_IDE_CONFIG=serverName=${XDEBUG_IDE_SERVERNAME:-php}
+      - DB_SERVER=mysql
+      - DB_PORT=3306
+      - DB_NAME=app
+      - DB_USER=root
+      - DB_PASSWORD=root
     depends_on:
       - mysql
 
