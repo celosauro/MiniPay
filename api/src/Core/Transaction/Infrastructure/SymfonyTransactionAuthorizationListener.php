@@ -17,7 +17,7 @@ use function preg_match;
 class SymfonyTransactionAuthorizationListener
 {
     private Request $request;
-    private string $userId;
+    private string $payerId;
     private ?string $userSecret;
 
     private UserRepository $userRepository;
@@ -65,7 +65,7 @@ class SymfonyTransactionAuthorizationListener
         $data = json_decode($data, true);
         $payerId = $data['payer'] ?? '';
 
-        $this->userId = $payerId;
+        $this->payerId = $payerId;
         $this->userSecret = $this->request->headers->get('X-User-Secret');
     }
 
@@ -103,6 +103,6 @@ class SymfonyTransactionAuthorizationListener
 
     private function foundUser(): ?User
     {
-        return $this->userRepository->findOneByIdOrNull(Id::fromString($this->userId));
+        return $this->userRepository->findOneByIdOrNull(Id::fromString($this->payerId));
     }
 }
