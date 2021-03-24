@@ -8,8 +8,8 @@ parameters:
     env(EXCEPTION_LISTENER_MODE): 'production'
     event.store: MiniPay\Framework\DomainEvent\Infrastructure\DoctrineEventStore
     user.repository: MiniPay\Core\User\Infrastructure\Persistence\DoctrineUserRepository
-    transaction.auth.client: MiniPay\Core\Tranction\Infrastructure\TransactionAuthClient
-    transaction.notificator: MiniPay\Core\Tranction\Infrastructure\TransactionNotificatorclient
+    transaction.auth.client: MiniPay\Core\Transaction\Infrastructure\TransactionAuthClient
+    transaction.notificator: MiniPay\Core\Transaction\Infrastructure\TransactionNotificatorclient
 
 services:
     # default configuration for services in *this* file
@@ -84,3 +84,7 @@ services:
 
     MiniPay\Framework\Serializer\Symfony\ArrayNormalizer:
         tags: ['serializer.normalizer']
+
+    MiniPay\Core\Transaction\Infrastructure\SymfonyTransactionAuthorizationListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
