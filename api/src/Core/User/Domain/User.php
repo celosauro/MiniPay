@@ -16,6 +16,7 @@ use MiniPay\Framework\DomainEvent\Domain\DomainEvent;
 use MiniPay\Framework\Id\Domain\Id;
 
 use function array_splice;
+use function base64_encode;
 use function preg_replace;
 
 /**
@@ -50,6 +51,12 @@ abstract class User
     /** @var DomainEvent[] */
     protected array $domainEvents = [];
 
+    /** @ORM\Column(type="string", length=255) */
+    protected string $salt;
+
+    /** @ORM\Column(type="string", length=255) */
+    protected string $token;
+
     /**
      * @psalm-param Id<User> $id
      */
@@ -65,6 +72,9 @@ abstract class User
         $this->cpfOrCnpj = $this->cleanNonDigitCharacter($cpfOrCnpj);
         $this->email = $email;
         $this->wallet = $wallet;
+
+        $this->salt = $this->generateHashString();
+        $this->token = $this->generateHashString();
 
         $this->domainEvents[] = UserCreated::create(
             $this->id()->toString(),
@@ -131,6 +141,21 @@ abstract class User
     }
 
     abstract public function type(): string;
+
+    public function checkSecret(string $secret): bool
+    {
+        return SecretEncoder::fromTokenAndSalt($this->token, $this->salt)->check($secret);
+    }
+
+    public function createSecret(): string
+    {
+        return SecretEncoder::fromTokenAndSalt($this->token, $this->salt)->generate();
+    }
+
+    private function generateHashString(): string
+    {
+        return base64_encode((string) Id::generate());
+    }
 
     private function cleanNonDigitCharacter(string $string): string
     {

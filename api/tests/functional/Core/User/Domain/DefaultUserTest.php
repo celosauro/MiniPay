@@ -13,6 +13,7 @@ use MiniPay\Framework\Id\Domain\Id;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
+use function base64_encode;
 
 class DefaultUserTest extends TestCase
 {
@@ -124,5 +125,80 @@ class DefaultUserTest extends TestCase
         $this->assertCount(2, $events);
         $this->assertEquals($id->toString(), $transactionReceivedEvent->userId);
         $this->assertEquals($amountToReceive, $transactionReceivedEvent->amount);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateASecret(): void
+    {
+        $id = Id::fromString('user-id');
+        $fullName = 'Foo Bar';
+        $cpfOrCnpj = '884.989.570-44';
+        $email = 'foobar@test.com';
+        $balance = 100.0;
+        $account = new Wallet($balance);
+
+        $user = DefaultUser::create(
+            $id,
+            $fullName,
+            $cpfOrCnpj,
+            $email,
+            $account
+        );
+
+        $secret =  $user->createSecret();
+
+        $this->assertNotEmpty($secret);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckAValidSecret(): void
+    {
+        $id = Id::fromString('user-id');
+        $fullName = 'Foo Bar';
+        $cpfOrCnpj = '884.989.570-44';
+        $email = 'foobar@test.com';
+        $balance = 100.0;
+        $account = new Wallet($balance);
+
+        $user = DefaultUser::create(
+            $id,
+            $fullName,
+            $cpfOrCnpj,
+            $email,
+            $account
+        );
+
+        $secret =  $user->createSecret();
+
+        $this->assertTrue($user->checkSecret($secret));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckAnInvalidSecret(): void
+    {
+        $id = Id::fromString('user-id');
+        $fullName = 'Foo Bar';
+        $cpfOrCnpj = '884.989.570-44';
+        $email = 'foobar@test.com';
+        $balance = 100.0;
+        $account = new Wallet($balance);
+
+        $user = DefaultUser::create(
+            $id,
+            $fullName,
+            $cpfOrCnpj,
+            $email,
+            $account
+        );
+
+        $secret = base64_encode((string) Id::generate());
+
+        $this->assertFalse($user->checkSecret($secret));
     }
 }
